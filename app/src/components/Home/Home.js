@@ -30,7 +30,7 @@ function Home() {
                 <Link to="/dresses" className="btn btn-primary btn-lg px-4 py-2">
                     <i className="bi bi-gem me-2"></i> צפה בשמלות
                 </Link>
-                <Link to="/info" className="btn btn-secondary btn-lg px-4 py-2">
+                <Link to="/about" className="btn btn-secondary btn-lg px-4 py-2">
                     <i className="bi bi-info-circle me-2"></i> מידע על האתר
                 </Link>
                 <Link to="/upload" className="btn btn-success btn-lg px-4 py-2">
