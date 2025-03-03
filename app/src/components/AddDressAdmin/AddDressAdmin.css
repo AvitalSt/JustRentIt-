@@ -1,0 +1,42 @@
+.add-dress-container {
+    width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .add-dress-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .add-dress-container input[type="text"],
+  .add-dress-container input[type="number"],
+  .add-dress-container input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+  }
+  
+  .add-dress-container button[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .add-dress-container button[type="submit"]:hover {
+    background-color: #45a049;
+  }
+  
+  .add-dress-container .message {
+    text-align: center;
+    margin-top: 10px;
+    color: #f00;
+  }
