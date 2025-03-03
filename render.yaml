@@ -4,4 +4,3 @@ services:
     runtime: node
     buildCommand: npm install && npm run build
     startCommand: serve -s build
-    staticPublishPath: build
