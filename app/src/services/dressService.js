@@ -4,8 +4,12 @@ import axios from 'axios';
 const API_URL = process.env.REACT_APP_API_URL;
 
 export const fetchDresses = async () => {
-    const response = await fetch(`${API_URL}/dresses`);
-    return response.json();
+    try {
+        const response = await axios.get(`${API_URL}/dresses`);
+        return response.data;
+    } catch (error) {
+        throw new Error("Error fetching dresses: " + error);
+    }
 };
 
 export const addDress = async (formData) => {
