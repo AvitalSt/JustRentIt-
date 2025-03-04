@@ -7,7 +7,8 @@ function AboutSite() {
             <h1>ברוכים הבאים ל-JustRentIt!<br />המקום להשכיר שמלה חלומית לכל אירוע.</h1>
 
             <p>
-            JustRentIt מציעה פלטפורמה  נגישה ונוחה  להשכרת שמלות מדהימות, שתאפשר לך למצוא את השמלה המושלמת עבורך.            </p>
+                JustRentIt מציעה פלטפורמה נגישה ונוחה להשכרת שמלות מדהימות, שתאפשר לך למצוא את השמלה המושלמת עבורך.
+            </p>
 
             <h2>איך זה עובד?</h2>
 
@@ -49,6 +50,13 @@ function AboutSite() {
             <p>
                 הצטרפי עוד היום ל-JustRentIt, ותני לשמלה שלך הזדמנות לשמח אישה נוספת!
             </p>
+
+            <div className="contact-info">
+                <h2>צרו קשר</h2>
+                <p>
+                    מייל: <a href="mailto:just.rent.it1@gmail.com">just.rent.it1@gmail.com</a>
+                </p>
+            </div>
         </div>
     );
 }

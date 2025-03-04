@@ -163,6 +163,7 @@ footer p {
     width: 60%; 
     margin: 20px auto; 
 }
+
 .slick-slider {
     width: 48%; 
     height: 300px;
@@ -192,4 +193,42 @@ footer p {
 
 .slick-dots li.slick-active button:before {
     color: var(--secondary-color);
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 30px 20px; /* Adjust padding for smaller screens */
+    }
+
+    .hero-section h1 {
+        font-size: 2.2rem; /* Slightly smaller font size for h1 */
+    }
+
+    .hero-section p {
+        font-size: 1rem; /* Smaller font size for paragraph */
+    }
+
+    .d-flex {
+        flex-direction: column; /* Stack buttons vertically */
+        align-items: center; /* Center buttons horizontally */
+        gap: 10px; /* Adjust gap between buttons */
+    }
+
+    .btn {
+        font-size: 0.9rem; /* Slightly smaller font size for buttons */
+        padding: 10px 20px; /* Adjust padding for buttons */
+    }
+
+    .sliders-container {
+        flex-direction: column; /* Stack sliders vertically */
+        width: 90%; /* Adjust width for smaller screens */
+        margin: 10px auto; /* Adjust margin for smaller screens */
+    }
+
+    .slick-slider {
+        width: 100%; /* Make sliders take full width */
+        height: 250px; /* Adjust height for smaller screens */
+        margin-bottom: 15px; /* Add margin between sliders */
+    }
 }

@@ -2,6 +2,10 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { getDressDetails } from "../../services/dressService";
 import { interestDressEmail } from "../../services/emailService";
+import Modal from "react-modal";
+// import "./DressDetail.css"; // ודא שיש לך קובץ CSS
+
+Modal.setAppElement("#root");
 
 function DressDetail() {
     const { id } = useParams();
@@ -11,7 +15,9 @@ function DressDetail() {
         email: "",
         phone: "",
     });
-    const [imageError, setImageError] = useState(false); 
+    const [imageError, setImageError] = useState(false);
+    const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [successMessage, setSuccessMessage] = useState("");
 
     useEffect(() => {
         const fetchDress = async () => {
@@ -40,8 +46,9 @@ function DressDetail() {
 
         try {
             await interestDressEmail(formPayload);
-            alert("הפרטים נשלחו בהצלחה!");
-            setFormData({ fullName: "", email: "", phone: "" }); 
+            setSuccessMessage("הפרטים נשלחו בהצלחה!");
+            setModalIsOpen(true);
+            setFormData({ fullName: "", email: "", phone: "" });
         } catch (error) {
             console.error("Error sending email:", error);
             alert("הייתה בעיה בשמירה או שליחה של הפרטים. נסה שוב.");
@@ -50,6 +57,11 @@ function DressDetail() {
 
     const handleImageError = () => {
         setImageError(true);
+    };
+
+    const closeModal = () => {
+        setModalIsOpen(false);
+        setSuccessMessage("");
     };
 
     if (!dress) {
@@ -66,7 +78,7 @@ function DressDetail() {
                         <img src="/placeholder.png" alt="Placeholder" className="img-fluid rounded shadow-lg" />
                     ) : (
                         <img
-                            src={`${API_URL}/uploads/${dress.image}`} 
+                            src={`${API_URL}/uploads/${dress.image}`}
                             alt={dress.name}
                             className="img-fluid rounded shadow-lg"
                             onError={handleImageError}
@@ -120,6 +132,17 @@ function DressDetail() {
                     </form>
                 </div>
             </div>
+
+            <Modal
+                isOpen={modalIsOpen}
+                onRequestClose={closeModal}
+                contentLabel="הודעת הצלחה"
+                className="modal-content"
+                overlayClassName="modal-overlay"
+            >
+                <p>{successMessage}</p>
+                <button onClick={closeModal}>סגור</button>
+            </Modal>
         </div>
     );
 }

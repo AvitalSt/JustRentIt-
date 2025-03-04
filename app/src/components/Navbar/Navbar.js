@@ -1,9 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import './Navbar.css'; 
-import logo from '../../assets/logo.png'; 
+import './Navbar.css';
+import logo from '../../assets/logo.png';
 
 function Navbar() {
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+    const toggleMenu = () => {
+        setIsMenuOpen(!isMenuOpen);
+    };
+
     return (
         <nav className="navbar">
             <div className="navbar-container">
@@ -11,7 +17,13 @@ function Navbar() {
                     <img src={logo} alt="Logo" className="logo-img" />
                 </Link>
 
-                <ul className="nav-menu">
+                <div className="navbar-toggle" onClick={toggleMenu}>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+
+                <ul className={`nav-menu ${isMenuOpen ? 'active' : ''}`}>
                     <li className="nav-item">
                         <Link to="/" className="nav-links">עמוד הבית</Link>
                     </li>
