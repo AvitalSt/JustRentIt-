@@ -8,7 +8,7 @@ const dressRoutes = require('./routes/dressRoutes');
 const authRoutes = require('./routes/authRoutes');
 const emailRoutes = require('./routes/emailRoutes');
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT;
 const DB_URI = process.env.DB_URI;
 
 mongoose.connect(process.env.DB_URI)

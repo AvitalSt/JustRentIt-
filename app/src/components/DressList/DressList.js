@@ -17,6 +17,8 @@ function DressList() {
         getDresses();
     }, []);
 
+    const API_URL = process.env.REACT_APP_API_URL;
+
     return (
         <div>
             <div className="hero-section">
@@ -28,7 +30,7 @@ function DressList() {
                     <div className="col-md-4" key={dress._id}>
                         <div className="card">
                             <img
-                                src={`http://localhost:5000/uploads/${dress.image}`} 
+                                src={`${API_URL}/uploads/${dress.image}`} 
                                 className="card-img-top"
                                 alt={dress.name}
                             />

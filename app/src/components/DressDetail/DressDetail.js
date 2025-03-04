@@ -56,6 +56,8 @@ function DressDetail() {
         return null;
     }
 
+    const API_URL = process.env.REACT_APP_API_URL;
+
     return (
         <div className="dress-detail container my-5">
             <div className="row">
@@ -64,7 +66,7 @@ function DressDetail() {
                         <img src="/placeholder.png" alt="Placeholder" className="img-fluid rounded shadow-lg" />
                     ) : (
                         <img
-                            src={`http://localhost:5000/uploads/${dress.image}`} 
+                            src={`${API_URL}/uploads/${dress.image}`} 
                             alt={dress.name}
                             className="img-fluid rounded shadow-lg"
                             onError={handleImageError}
