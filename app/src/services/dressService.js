@@ -1,7 +1,7 @@
 // src/services/dressService.js
 import axios from 'axios';
 
-const API_URL = "http://localhost:5000"; // כתובת השרת
+const API_URL = process.env.REACT_APP_API_URL;
 
 export const fetchDresses = async () => {
     const response = await fetch(`${API_URL}/dresses`);
