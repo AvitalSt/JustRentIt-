@@ -1,12 +1,13 @@
 const Dress = require('../models/dressModel');
+require('dotenv').config();
 
 const getAllDresses = async (req, res) => {
   try {
       const dresses = await Dress.find();
-      const API_URL = process.env.REACT_APP_API_URL; // קבל את ה-API_URL מהסביבה
+      const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
       const dressesWithFullImageUrl = dresses.map(dress => ({
           ...dress.toObject(),
-          image: `<span class="math-inline">\{API\_URL\}/uploads/</span>{dress.image}` // הוסף את ה-URL המלא
+          image: `${REACT_APP_API_URL}/uploads/${dress.image}`
       }));
       res.json(dressesWithFullImageUrl);
   } catch (err) {
@@ -14,15 +15,14 @@ const getAllDresses = async (req, res) => {
   }
 };
 
-
 const getDressById = async (req, res) => {
   try {
       const dress = await Dress.findById(req.params.id);
       if (!dress) return res.status(404).json({ error: 'Dress not found' });
-      const API_URL = process.env.REACT_APP_API_URL; // קבל את ה-API_URL מהסביבה
+      const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
       const dressWithFullImageUrl = {
           ...dress.toObject(),
-          image: `<span class="math-inline">\{API\_URL\}/uploads/</span>{dress.image}` // הוסף את ה-URL המלא
+          image: `${REACT_APP_API_URL}/uploads/${dress.image}`
       };
       res.json(dressWithFullImageUrl);
   } catch (err) {
