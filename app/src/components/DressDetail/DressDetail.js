@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import { getDressDetails } from "../../services/dressService";
 import { interestDressEmail } from "../../services/emailService";
 import Modal from "react-modal";
-// import "./DressDetail.css"; // ודא שיש לך קובץ CSS
 
 Modal.setAppElement("#root");
 
