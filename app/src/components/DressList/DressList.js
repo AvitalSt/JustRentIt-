@@ -75,7 +75,7 @@ function DressList() {
                     sortedDresses.map((dress) => (
                         <div className="card" key={dress._id}>
                             <img
-                                src={`${API_URL}/uploads/${dress.image}`}
+                                src={dress.image}
                                 className="card-img-top"
                                 alt={dress.name}
                             />
