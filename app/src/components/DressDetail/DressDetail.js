@@ -14,7 +14,6 @@ function DressDetail() {
         email: "",
         phone: "",
     });
-    const [imageError, setImageError] = useState(false);
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [successMessage, setSuccessMessage] = useState("");
 
@@ -54,10 +53,6 @@ function DressDetail() {
         }
     };
 
-    const handleImageError = () => {
-        setImageError(true);
-    };
-
     const closeModal = () => {
         setModalIsOpen(false);
         setSuccessMessage("");
@@ -67,24 +62,15 @@ function DressDetail() {
         return null;
     }
 
-    const API_URL = process.env.REACT_APP_API_URL;
-
     return (
         <div className="dress-detail container my-5">
             <div className="row">
                 <div className="col-md-6">
-                    {imageError ? (
-                        <img
-                                src={dress.image}
-                                className="card-img-top"
-                                alt={dress.name}
-                            />                    ) : (
-                                <img
-                                src={dress.image}
-                                className="card-img-top"
-                                alt={dress.name}
-                            />
-                    )}
+                    <img
+                        src={`/uploads/${dress.image}`}
+                        alt={dress.name}
+                        className="img-fluid rounded shadow-lg"
+                    />
                 </div>
                 <div className="col-md-6">
                     <h2 className="mb-3 text-center">{dress.name}</h2>
