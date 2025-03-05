@@ -77,11 +77,10 @@ function DressDetail() {
                         <img src="/placeholder.png" alt="Placeholder" className="img-fluid rounded shadow-lg" />
                     ) : (
                         <img
-                            src={`${API_URL}/uploads/${dress.image}`}
-                            alt={dress.name}
-                            className="img-fluid rounded shadow-lg"
-                            onError={handleImageError}
-                        />
+                                src={dress.image}
+                                className="card-img-top"
+                                alt={dress.name}
+                            />
                     )}
                 </div>
                 <div className="col-md-6">
