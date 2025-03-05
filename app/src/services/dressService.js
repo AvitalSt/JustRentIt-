@@ -5,6 +5,7 @@ const API_URL = process.env.REACT_APP_API_URL;
 export const fetchDresses = async () => {
     try {
         const response = await axios.get(`${API_URL}/dresses`);
+        console.log( response.data)
         return response.data;
     } catch (error) {
         throw new Error("Error fetching dresses: " + error);
