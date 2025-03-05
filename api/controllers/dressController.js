@@ -3,11 +3,7 @@ const Dress = require('../models/dressModel');
 const getAllDresses = async (req, res) => {
     try {
         const dresses = await Dress.find();
-        const dressesWithFullImageUrl = dresses.map(dress => ({
-            ...dress.toObject(),
-            image: `/uploads/${dress.image}`
-        }));
-        res.json(dressesWithFullImageUrl);
+        res.json(dresses);
     } catch (err) {
         res.status(500).json({ error: 'Server error' });
     }
