@@ -5,4 +5,4 @@ app/.env
 api/.env
 api/package-lock.json
 app/package-lock.json
-api/uploads/
+# api/uploads/
