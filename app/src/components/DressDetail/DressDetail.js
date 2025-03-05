@@ -74,9 +74,12 @@ function DressDetail() {
             <div className="row">
                 <div className="col-md-6">
                     {imageError ? (
-                        <img src="/placeholder.png" alt="Placeholder" className="img-fluid rounded shadow-lg" />
-                    ) : (
                         <img
+                                src={dress.image}
+                                className="card-img-top"
+                                alt={dress.name}
+                            />                    ) : (
+                                <img
                                 src={dress.image}
                                 className="card-img-top"
                                 alt={dress.name}
