@@ -14,6 +14,7 @@ function DressDetail() {
         email: "",
         phone: "",
     });
+    const [imageError, setImageError] = useState(false);
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [successMessage, setSuccessMessage] = useState("");
 
@@ -53,6 +54,10 @@ function DressDetail() {
         }
     };
 
+    const handleImageError = () => {
+        setImageError(true);
+    };
+
     const closeModal = () => {
         setModalIsOpen(false);
         setSuccessMessage("");
@@ -62,15 +67,22 @@ function DressDetail() {
         return null;
     }
 
+    const API_URL = process.env.REACT_APP_API_URL;
+
     return (
         <div className="dress-detail container my-5">
             <div className="row">
                 <div className="col-md-6">
-                    <img
-                        src={`/uploads/${dress.image}`}
-                        alt={dress.name}
-                        className="img-fluid rounded shadow-lg"
-                    />
+                    {imageError ? (
+                        <img src="/placeholder.png" alt="Placeholder" className="img-fluid rounded shadow-lg" />
+                    ) : (
+                        <img
+                            src={`${API_URL}/uploads/${dress.image}`}
+                            alt={dress.name}
+                            className="img-fluid rounded shadow-lg"
+                            onError={handleImageError}
+                        />
+                    )}
                 </div>
                 <div className="col-md-6">
                     <h2 className="mb-3 text-center">{dress.name}</h2>
@@ -133,3 +145,5 @@ function DressDetail() {
         </div>
     );
 }
+
+export default DressDetail;
