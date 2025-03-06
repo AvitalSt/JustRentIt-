@@ -138,9 +138,9 @@
   .filter-container {
     flex-direction: row;
     justify-content: space-around;
-    flex-wrap: wrap;
+    flex-wrap: nowrap; 
     padding: 0 5px;
-    overflow-x: visible;
+    overflow-x: auto;
   }
 
   .sort-container {
@@ -175,17 +175,19 @@
     display: block;
   }
 
+  .sort-button {
+    padding: 5px 8px; /* הקטנת padding */
+    font-size: 0.6rem; /* הקטנת גודל פונט */
+    white-space: nowrap;
+  }
+
   .sort-dropdown button {
-    padding: 12px 16px;
-    font-size: 0.6rem; 
+    padding: 5px 8px; /* הקטנת padding */
+    font-size: 0.6rem; /* הקטנת גודל פונט */
     white-space: nowrap;
     display: block;
     width: 100%;
     text-align: right;
-  }
-
-  .sort-button {
-    font-size: 0.6rem;
   }
 }
 
