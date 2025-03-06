@@ -66,11 +66,8 @@ function DressDetail() {
         <div className="dress-detail container my-5">
             <div className="row">
                 <div className="col-md-6">
-                    <img
-                        src={`/uploads/${dress.image}`}
-                        alt={dress.name}
-                        className="img-fluid rounded shadow-lg"
-                    />
+                <img src={dress.image} className="card-img-top" alt={dress.name} />
+
                 </div>
                 <div className="col-md-6">
                     <h2 className="mb-3 text-center">{dress.name}</h2>

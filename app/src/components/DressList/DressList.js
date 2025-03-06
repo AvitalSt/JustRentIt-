@@ -14,6 +14,7 @@ function DressList() {
         const getDresses = async () => {
             try {
                 const data = await fetchDresses();
+                console.log("Data from API:", data); // הוסף לוג
                 setDresses(data);
             } catch (error) {
                 console.error("Error fetching dresses:", error);
@@ -74,11 +75,7 @@ function DressList() {
                 ) : sortedDresses.length > 0 ? (
                     sortedDresses.map((dress) => (
                         <div className="card" key={dress._id}>
-                            <img
-                                src={`/uploads/${dress.image}`} // שינוי כאן
-                                className="card-img-top"
-                                alt={dress.name}
-                            />
+                            <img src={dress.image} className="card-img-top" alt={dress.name} />
                             <div className="card-body">
                                 <h5 className="card-title card-title-highlight">{dress.name}</h5>
                                 <p className="card-text card-text-italic">{dress.description}</p>

@@ -6,7 +6,7 @@ const getAllDresses = async (req, res) => {
         const dresses = await Dress.find();
         const dressesWithFullImageUrl = dresses.map(dress => ({
             ...dress.toObject(),
-            image: `/uploads/${dress.image}` // URL יחסי
+            image: `${process.env.REACT_APP_API_URL}/uploads/${dress.image}` // תיקון כאן
         }));
         res.json(dressesWithFullImageUrl);
     } catch (err) {
@@ -20,7 +20,7 @@ const getDressById = async (req, res) => {
         if (!dress) return res.status(404).json({ error: 'Dress not found' });
         const dressWithFullImageUrl = {
             ...dress.toObject(),
-            image: `/uploads/${dress.image}` // URL יחסי
+            image: `${process.env.REACT_APP_API_URL}/uploads/${dress.image}` // תיקון כאן
         };
         res.json(dressWithFullImageUrl);
     } catch (err) {
