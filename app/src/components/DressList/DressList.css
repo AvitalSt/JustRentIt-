@@ -9,7 +9,6 @@
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   margin: 5px;
-  /* Adjust margin for spacing */
 }
 
 .card:hover {
@@ -136,13 +135,12 @@
     font-size: 0.9rem;
   }
 
-
   .filter-container {
     flex-direction: row;
     justify-content: space-around;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     padding: 0 5px;
-    overflow-x: auto;
+    overflow-x: visible;
   }
 
   .sort-container {
@@ -157,17 +155,20 @@
   }
 
   .sort-dropdown {
-    position: fixed; /* שימוש ב-position: fixed */
-    top: 50%; /* מיקום במרכז המסך */
-    left: 50%; /* מיקום במרכז המסך */
-    transform: translate(-50%, -50%); /* הזזה למרכז */
-    width: 90%; /* רוחב 90% מהמסך */
-    max-width: 300px; /* רוחב מקסימלי */
-    min-width: auto; /* רוחב אוטומטי */
+    position: fixed;
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 400px;
+    min-width: 200px;
+    max-height: 400%;
+    overflow-y: auto;
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-    z-index: 1000; /* מיקום מעל תוכן אחר */
+    z-index: 1000;
     border-radius: 5px;
     display: none;
+    padding: 15px;
   }
 
   .sort-dropdown.show {
@@ -175,15 +176,18 @@
   }
 
   .sort-dropdown button {
-    padding: 10px 15px; /* פדינג גדול יותר */
-    font-size: 1rem; /* גודל פונט גדול יותר */
+    padding: 12px 16px;
+    font-size: 0.6rem; 
     white-space: nowrap;
     display: block;
     width: 100%;
-    text-align: center; /* יישור למרכז */
+    text-align: right;
+  }
+
+  .sort-button {
+    font-size: 0.6rem;
   }
 }
-
 
 .dress-list-container {
   display: flex;
