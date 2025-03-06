@@ -4,9 +4,9 @@ import './DressList.css';
 import { Link } from 'react-router-dom';
 
 function DressList() {
-    const [dresses, setDresses] = useState([]); 
-    const [colorCounts, setColorCounts] = useState([]); 
-    const [locationCounts, setLocationCounts] = useState([]); 
+    const [dresses, setDresses] = useState([]);
+    const [colorCounts, setColorCounts] = useState([]);
+    const [locationCounts, setLocationCounts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [sort, setSort] = useState("latest");
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -22,7 +22,11 @@ function DressList() {
         const getDresses = async () => {
             try {
                 const response = await fetchDresses(selectedColor, selectedLocation, sort === 'price-low' ? 'price-asc' : sort === 'price-high' ? 'price-desc' : undefined);
-                setDresses(response.dresses);
+
+                // הוספת השורה הבאה כדי להפוך את סדר השמלות
+                const reversedDresses = [...response.dresses].reverse();
+
+                setDresses(reversedDresses);
                 setColorCounts(response.colorCounts);
                 setLocationCounts(response.locationCounts);
                 setLoading(false);
@@ -66,15 +70,24 @@ function DressList() {
         }
     };
 
+    const handleLocationClickOutside = (event) => {
+        if (locationDropdownRef.current && !locationDropdownRef.current.contains(event.target)) {
+            setIsLocationDropdownOpen(false);
+        }
+    };
+
     useEffect(() => {
         document.addEventListener("mousedown", handleClickOutside);
         document.addEventListener("mousedown", handleColorClickOutside);
+        document.addEventListener("mousedown", handleLocationClickOutside);
+
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
             document.removeEventListener("mousedown", handleColorClickOutside);
+            document.removeEventListener("mousedown", handleLocationClickOutside);
         };
     }, []);
-
+    
     return (
         <div>
             <div className="hero-section">
