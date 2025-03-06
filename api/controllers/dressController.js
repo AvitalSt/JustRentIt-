@@ -4,16 +4,17 @@ require('dotenv').config();
 const getAllDresses = async (req, res) => {
     try {
         const colorFilter = req.query.color;
-        const locationFilter = req.query.location; 
+        const locationFilter = req.query.location;
+        const sortBy = req.query.sortBy; // Add sortBy from req.query
         console.log("Color Filter:", colorFilter);
-        console.log("Location Filter:", locationFilter); 
+        console.log("Location Filter:", locationFilter);
         console.log("Sort By:", sortBy);
         const filter = {};
         if (colorFilter) {
             filter.color = colorFilter;
         }
         if (locationFilter) {
-            filter.location = locationFilter; 
+            filter.location = locationFilter;
         }
         let sortOptions = {};
         if (sortBy === 'price-asc') {
@@ -51,9 +52,10 @@ const getAllDresses = async (req, res) => {
             ...dress.toObject(),
             image: `${process.env.REACT_APP_API_URL}/uploads/${dress.image}`
         }));
-        res.json({ dresses: dressesWithFullImageUrl, colorCounts, locationCounts }); 
+        res.json({ dresses: dressesWithFullImageUrl, colorCounts, locationCounts });
     } catch (err) {
-        res.status(500).json({ error: 'Server error' });
+        console.error("Error in getAllDresses:", err); // Log the error
+        res.status(500).json({ error: 'Server error', message: err.message }); // Send detailed error
     }
 };
 
