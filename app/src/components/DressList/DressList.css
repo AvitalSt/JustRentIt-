@@ -101,16 +101,16 @@
 
 @media (max-width: 768px) {
   .hero-section {
-    padding: 20px;
-    height: 120px;
+    padding: 15px;
+    height: 100px;
   }
 
   .hero-section h1 {
-    font-size: 1.5rem;
+    font-size: 1rem;
   }
 
   .hero-section p {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
   }
 
   .card {
@@ -136,16 +136,54 @@
     font-size: 0.9rem;
   }
 
+
   .filter-container {
-    flex-direction: column;
-    align-items: center;
+    flex-direction: row;
+    justify-content: space-around;
+    flex-wrap: nowrap;
+    padding: 0 5px;
+    overflow-x: auto;
   }
 
-  .dropdown-container {
-    width: 90%;
+  .sort-container {
+    width: auto;
+    margin: 2px;
   }
 
+  .sort-button {
+    padding: 5px 8px;
+    font-size: 0.6rem;
+    white-space: nowrap;
+  }
+
+  .sort-dropdown {
+    position: fixed; /* שימוש ב-position: fixed */
+    top: 50%; /* מיקום במרכז המסך */
+    left: 50%; /* מיקום במרכז המסך */
+    transform: translate(-50%, -50%); /* הזזה למרכז */
+    width: 90%; /* רוחב 90% מהמסך */
+    max-width: 300px; /* רוחב מקסימלי */
+    min-width: auto; /* רוחב אוטומטי */
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1000; /* מיקום מעל תוכן אחר */
+    border-radius: 5px;
+    display: none;
+  }
+
+  .sort-dropdown.show {
+    display: block;
+  }
+
+  .sort-dropdown button {
+    padding: 10px 15px; /* פדינג גדול יותר */
+    font-size: 1rem; /* גודל פונט גדול יותר */
+    white-space: nowrap;
+    display: block;
+    width: 100%;
+    text-align: center; /* יישור למרכז */
+  }
 }
+
 
 .dress-list-container {
   display: flex;
@@ -212,7 +250,6 @@
 .sort-dropdown button:hover {
   background-color: #f1f1f1;
 }
-
 
 .page-numbers {
   list-style: none;
