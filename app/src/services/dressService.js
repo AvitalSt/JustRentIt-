@@ -32,7 +32,8 @@ export const addDress = async (formData) => {
         const response = await axios.post(`${API_URL}/dresses`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
-            },
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
         });
         return response.data;
     } catch (error) {

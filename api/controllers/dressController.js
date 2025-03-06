@@ -54,8 +54,8 @@ const getAllDresses = async (req, res) => {
         }));
         res.json({ dresses: dressesWithFullImageUrl, colorCounts, locationCounts });
     } catch (err) {
-        console.error("Error in getAllDresses:", err); // Log the error
-        res.status(500).json({ error: 'Server error', message: err.message }); // Send detailed error
+        console.error("Error in getAllDresses:", err); 
+        res.status(500).json({ error: 'Server error', message: err.message }); 
     }
 };
 

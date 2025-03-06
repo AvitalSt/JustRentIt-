@@ -8,7 +8,8 @@
   border-radius: 15px;
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  margin: 5px; /* Adjust margin for spacing */
+  margin: 5px;
+  /* Adjust margin for spacing */
 }
 
 .card:hover {
@@ -113,14 +114,14 @@
   }
 
   .card {
-    height: auto; 
+    height: auto;
     width: 90%;
     margin: 20px auto;
   }
 
   .card-img-top {
-    height: auto; 
-    max-height: 300px; 
+    height: auto;
+    max-height: 300px;
   }
 
   .card-title {
@@ -134,14 +135,24 @@
   .card-price {
     font-size: 0.9rem;
   }
+
+  .filter-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .dropdown-container {
+    width: 90%;
+  }
+
 }
 
 .dress-list-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  padding: 10px; 
-  margin-top: 10px; 
+  padding: 10px;
+  margin-top: 10px;
 }
 
 .filter-container {
@@ -224,11 +235,11 @@
 
 select {
   background-color: #897077;
-  color: white; 
-  border: none; 
-  padding: 10px 20px; 
-  border-radius: 25px; 
-  cursor: pointer; 
-  font-size: 1rem; 
-  appearance: none; 
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 1rem;
+  appearance: none;
 }

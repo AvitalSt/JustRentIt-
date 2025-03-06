@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { addDressEmail } from "../../services/emailService";
+import { addDressEmail } from "../../services/emailService"; 
 import Modal from "react-modal";
 import "./UploadDressForm.css";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 
 Modal.setAppElement("#root");
 
@@ -171,14 +171,14 @@ function AddDressForm() {
           <br />
           נעדכן אותך במייל ברגע שהיא תאושר להעלאה.
           <br />
-          זכרי, במידה ותתבצע השכרה דרך האתר, 
+          זכרי, במידה ותתבצע השכרה דרך האתר,
           <br />
           תחול עמלה של 15% ממחיר ההשכרה.
           <br />
           אנו מעריכים את שיתוף הפעולה!
           <br />
         </p>
-        <button onClick={closeModal}>סגור</button>
+        <button className="general-button" onClick={closeModal}>סגור</button>
       </Modal>
     </div>
   );

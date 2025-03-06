@@ -11,11 +11,18 @@ function Login() {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            await loginAdmin(username, password);
+            const response = await loginAdmin(username, password);
+            localStorage.setItem('token', response.token);
             navigate('/add-dress');
         } catch (error) {
-            console.error("Login Error:", error); 
-            setMessage(error.response?.data?.message || 'שגיאה בהתחברות. נסה שוב.');
+            console.error("Login Error:", error);
+            if (error.response) {
+                setMessage(error.response.data.message || 'שגיאה בהתחברות. נסה שוב.');
+            } else if (error.request) {
+                setMessage('שגיאת רשת. נסה שוב מאוחר יותר.');
+            } else {
+                setMessage('שגיאה בהתחברות. נסה שוב.');
+            }
         }
     };
 

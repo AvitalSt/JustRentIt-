@@ -1,12 +1,20 @@
-const adminUsername = process.env.ADMIN_USER
-const adminPassword = process.env.ADMIN_PASS
+const jwt = require('jsonwebtoken');
 
-exports.login = (req, res) => {
-    const { username, password } = req.body;
+const adminUsername = process.env.ADMIN_USER;
+const adminPassword = process.env.ADMIN_PASS;
 
-    if (username === adminUsername && password === adminPassword) {
-        res.send({ message: 'Login successful' });
-    } else {
-        res.status(401).send({ message: 'Invalid credentials' });
-    }
+exports.login = async (req, res) => {
+  const { username, password } = req.body;
+
+  if (username === adminUsername && password === adminPassword) {
+    const token = jwt.sign(
+      { isAdmin: true },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
+    res.status(200).json({ token });
+  } else {
+    res.status(401).send({ message: 'Invalid credentials' });
+  }
 };
