@@ -7,6 +7,7 @@ const dressSchema = new mongoose.Schema({
   buyPrice: { type: Number, required: true },
   rentPrice: { type: Number, required: true },
   image: { type: String, required: true },
+  color: { type: String, required: true},
 });
 
 const Dress = mongoose.model('Dress', dressSchema);
