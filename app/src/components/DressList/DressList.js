@@ -87,7 +87,7 @@ function DressList() {
             document.removeEventListener("mousedown", handleLocationClickOutside);
         };
     }, []);
-    
+
     return (
         <div>
             <div className="hero-section">
@@ -102,8 +102,8 @@ function DressList() {
                     </button>
                     <div className={`sort-dropdown ${isDropdownOpen ? 'show' : ''}`}>
                         <button onClick={() => { setSort("latest"); setIsDropdownOpen(false); }}>החדש ביותר</button>
-                        <button onClick={() => { setSort("price-low"); setIsDropdownOpen(false); }}>מחיר: נמוך לגבוה</button>
-                        <button onClick={() => { setSort("price-high"); setIsDropdownOpen(false); }}>מחיר: גבוה לנמוך</button>
+                        <button onClick={() => { setSort("price-high"); setIsDropdownOpen(false); }}>מחיר: נמוך לגבוה</button>
+                        <button onClick={() => { setSort("price-low"); setIsDropdownOpen(false); }}>מחיר: גבוה לנמוך</button>
                     </div>
                 </div>
 
@@ -164,7 +164,7 @@ function DressList() {
 
             <div className="dress-list-container">
                 {loading ? (
-                    <p>Loading dresses...</p>
+                    <p>השמלות בטעינה, אנא המתינו מספר שניות.</p>
                 ) : dresses && dresses.length > 0 ? (
                     dresses.map((dress) => (
                         <div className="card" key={dress._id}>
