@@ -14,6 +14,11 @@ function DressDetail() {
         email: "",
         phone: "",
     });
+    const [errors, setErrors] = useState({
+        fullName: "",
+        email: "",
+        phone: "",
+    });
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [successMessage, setSuccessMessage] = useState("");
 
@@ -31,10 +36,46 @@ function DressDetail() {
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+        setErrors({ ...errors, [e.target.name]: "" }); 
+    };
+
+    const validateForm = () => {
+        let isValid = true;
+        let newErrors = {};
+
+        if (!formData.fullName.trim()) {
+            newErrors.fullName = "שם מלא נדרש";
+            isValid = false;
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!formData.email.trim()) {
+            newErrors.email = "מייל נדרש";
+            isValid = false;
+        } else if (!emailRegex.test(formData.email)) {
+            newErrors.email = "מייל לא תקין";
+            isValid = false;
+        }
+
+        const phoneRegex = /^\d{9,10}$/;
+        if (!formData.phone.trim()) {
+            newErrors.phone = "מספר טלפון נדרש";
+            isValid = false;
+        } else if (!phoneRegex.test(formData.phone)) {
+            newErrors.phone = "מספר טלפון לא תקין";
+            isValid = false;
+        }
+
+        setErrors(newErrors);
+        return isValid;
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!validateForm()) {
+            return;
+        }
 
         const formPayload = {
             ...formData,
@@ -66,8 +107,7 @@ function DressDetail() {
         <div className="dress-detail container my-5">
             <div className="row">
                 <div className="col-md-6">
-                <img src={dress.image} className="card-img-top" alt={dress.name} />
-
+                    <img src={dress.image} className="card-img-top" alt={dress.name} />
                 </div>
                 <div className="col-md-6">
                     <h2 className="mb-3 text-center">{dress.name}</h2>
@@ -87,8 +127,8 @@ function DressDetail() {
                                 name="fullName"
                                 value={formData.fullName}
                                 onChange={handleChange}
-                                required
                             />
+                            {errors.fullName && <div className="text-danger">{errors.fullName}</div>}
                         </div>
                         <div className="mb-3">
                             <input
@@ -98,8 +138,8 @@ function DressDetail() {
                                 name="email"
                                 value={formData.email}
                                 onChange={handleChange}
-                                required
                             />
+                            {errors.email && <div className="text-danger">{errors.email}</div>}
                         </div>
                         <div className="mb-3">
                             <input
@@ -109,8 +149,8 @@ function DressDetail() {
                                 name="phone"
                                 value={formData.phone}
                                 onChange={handleChange}
-                                required
                             />
+                            {errors.phone && <div className="text-danger">{errors.phone}</div>}
                         </div>
                         <button type="submit" className="btn btn-primary btn-lg w-100">שלח פרטים</button>
                     </form>

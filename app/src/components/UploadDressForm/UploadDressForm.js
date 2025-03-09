@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { addDressEmail } from "../../services/emailService"; 
+import { addDressEmail } from "../../services/emailService";
 import Modal from "react-modal";
 import "./UploadDressForm.css";
 import { useNavigate } from "react-router-dom";
@@ -7,181 +7,159 @@ import { useNavigate } from "react-router-dom";
 Modal.setAppElement("#root");
 
 function AddDressForm() {
-  const [formData, setFormData] = useState({
-    fullName: "",
-    phone: "",
-    email: "",
-    dressName: "",
-    location: "",
-    buyPrice: "",
-    rentPrice: "",
-    size: "",
-  });
-
-  const [image, setImage] = useState(null);
-  const [error, setError] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
-  const [modalIsOpen, setModalIsOpen] = useState(false);
-  const navigate = useNavigate();
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleImageChange = (e) => {
-    if (e.target.files.length === 0) {
-      setImage(null);
-      setError("❌ חובה להעלות תמונה!");
-    } else {
-      setImage(e.target.files[0]);
-      setError("");
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!image) {
-      setError("❌ חובה להעלות תמונה!");
-      return;
-    }
-
-    const formDataToSend = new FormData();
-    Object.keys(formData).forEach((key) => {
-      formDataToSend.append(key, formData[key]);
+    const [formData, setFormData] = useState({
+        fullName: "",
+        phone: "",
+        email: "",
+        dressName: "",
+        location: "",
+        buyPrice: "",
+        rentPrice: "",
+        size: "",
     });
 
-    formDataToSend.append("image", image);
+    const [image, setImage] = useState(null);
+    const [errors, setErrors] = useState({});
+    const [successMessage, setSuccessMessage] = useState("");
+    const [modalIsOpen, setModalIsOpen] = useState(false);
+    const navigate = useNavigate();
+    const [isLoading, setIsLoading] = useState(false);
 
-    try {
-      await addDressEmail(formDataToSend);
-      setSuccessMessage(
-        "פרטי השמלה שלך נשלחו. בבקשה חכו לאישור העלאת השמלה במייל. תזכורת: אם תהיה השכרה דרך האתר, נבקש 15% ממחיר השמלה. תודה על שיתוף הפעולה."
-      );
-      setModalIsOpen(true);
-    } catch (error) {
-      alert("❌ שגיאה בהוספת השמלה");
-    }
-  };
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+        setErrors({ ...errors, [e.target.name]: "" });
+    };
 
-  const closeModal = () => {
-    setModalIsOpen(false);
-    setSuccessMessage("");
-    navigate("/");
-  };
+    const handleImageChange = (e) => {
+        if (e.target.files.length === 0) {
+            setImage(null);
+            setErrors({ ...errors, image: "❌ חובה להעלות תמונה!" });
+        } else {
+            setImage(e.target.files[0]);
+            setErrors({ ...errors, image: "" });
+        }
+    };
 
-  return (
-    <div className="add-dress-container">
-      <h2>✨ הוספת שמלה</h2>
-      <form
-        className="add-dress-form"
-        onSubmit={handleSubmit}
-        encType="multipart/form-data"
-      >
-        <input
-          type="text"
-          name="fullName"
-          placeholder=" שם מלא"
-          value={formData.fullName}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="tel"
-          name="phone"
-          placeholder=" טלפון"
-          value={formData.phone}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="email"
-          name="email"
-          placeholder=" אימייל"
-          value={formData.email}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="text"
-          name="dressName"
-          placeholder=" שם השמלה"
-          value={formData.dressName}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="text"
-          name="location"
-          placeholder=" מיקום"
-          value={formData.location}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="number"
-          name="buyPrice"
-          placeholder=" מחיר קנייה"
-          value={formData.buyPrice}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="number"
-          name="rentPrice"
-          placeholder=" מחיר השכרה"
-          value={formData.rentPrice}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="text"
-          name="size"
-          placeholder=" מידה"
-          value={formData.size}
-          onChange={handleChange}
-          required
-        />
+    const validateForm = () => {
+        let isValid = true;
+        let newErrors = {};
 
-        <input
-          type="file"
-          name="image"
-          accept="image/*"
-          onChange={handleImageChange}
-          required
-        />
+        const requiredFields = ["fullName", "email", "phone", "dressName", "location", "buyPrice", "rentPrice", "size"];
+        requiredFields.forEach((field) => {
+            if (!formData[field].trim()) {
+                newErrors[field] = `${field.replace(/([A-Z])/g, ' $1').trim()} נדרש`;
+                isValid = false;
+            }
+        });
 
-        {error && <p style={{ color: "red" }}>{error}</p>}
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (formData.email && !emailRegex.test(formData.email)) {
+            newErrors.email = "מייל לא תקין";
+            isValid = false;
+        }
 
-        <button className="add-dress-btn" type="submit">
-          ➕ הוסף שמלה
-        </button>
-      </form>
+        const phoneRegex = /^\d{9,10}$/;
+        if (formData.phone && !phoneRegex.test(formData.phone)) {
+            newErrors.phone = "מספר טלפון לא תקין";
+            isValid = false;
+        }
 
-      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={closeModal}
-        contentLabel="הודעת הצלחה"
-        className="modal-content"
-        overlayClassName="modal-overlay"
-      >
-        <h2>שמלתך נשלחה בהצלחה!</h2>
-        <p>
-          פרטי השמלה נשלחו לבדיקה ואישור.
-          <br />
-          נעדכן אותך במייל ברגע שהיא תאושר להעלאה.
-          <br />
-          זכרי, במידה ותתבצע השכרה דרך האתר,
-          <br />
-          תחול עמלה של 15% ממחיר ההשכרה.
-          <br />
-          אנו מעריכים את שיתוף הפעולה!
-          <br />
-        </p>
-        <button className="general-button" onClick={closeModal}>סגור</button>
-      </Modal>
-    </div>
-  );
+        if (!image) {
+            newErrors.image = "❌ חובה להעלות תמונה!";
+            isValid = false;
+        }
+
+        setErrors(newErrors);
+        return isValid;
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (!validateForm()) {
+            return;
+        }
+
+        setIsLoading(true);
+        const formDataToSend = new FormData();
+        Object.keys(formData).forEach((key) => {
+            formDataToSend.append(key, formData[key]);
+        });
+
+        formDataToSend.append("image", image);
+
+        try {
+            await addDressEmail(formDataToSend);
+            setSuccessMessage(
+                "פרטי השמלה שלך נשלחו. בבקשה חכו לאישור העלאת השמלה במייל. תזכורת: אם תהיה השכרה דרך האתר, נבקש 15% ממחיר השמלה. תודה על שיתוף הפעולה."
+            );
+            setModalIsOpen(true);
+        } catch (error) {
+            alert("❌ שגיאה בהוספת השמלה");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const closeModal = () => {
+        setModalIsOpen(false);
+        setSuccessMessage("");
+        navigate("/");
+    };
+
+    return (
+        <div className="add-dress-container">
+            <h2>✨ הוספת שמלה</h2>
+            <form className="add-dress-form" onSubmit={handleSubmit} encType="multipart/form-data">
+                {Object.keys(formData).map((key) => (
+                    <div key={key}>
+                        <input
+                            type={key === "email" ? "email" : key === "phone" ? "tel" : "text"}
+                            name={key}
+                            placeholder={
+                                key === "fullName" ? "שם מלא" :
+                                key === "phone" ? "טלפון" :
+                                key === "email" ? "אימייל" :
+                                key === "dressName" ? "שם השמלה" :
+                                key === "location" ? "מיקום" :
+                                key === "buyPrice" ? "מחיר קנייה" :
+                                key === "rentPrice" ? "מחיר השכרה" :
+                                key === "size" ? "מידה" :
+                                ""
+                            }
+                            value={formData[key]}
+                            onChange={handleChange}
+                        />
+                        {errors[key] && <div className="text-danger">{errors[key]}</div>}
+                    </div>
+                ))}
+
+                <input type="file" name="image" accept="image/*" onChange={handleImageChange} />
+                {errors.image && <div className="text-danger">{errors.image}</div>}
+
+                <button className="add-dress-btn" type="submit" disabled={isLoading}>
+                    {isLoading ? "השמלה נשלחת, אנא המתן..." : "➕ הוסף שמלה"}
+                </button>
+            </form>
+
+            <Modal isOpen={modalIsOpen} onRequestClose={closeModal} contentLabel="הודעת הצלחה" className="modal-content" overlayClassName="modal-overlay">
+                <h2>שמלתך נשלחה בהצלחה!</h2>
+                <p>
+                    פרטי השמלה נשלחו לבדיקה ואישור.
+                    <br />
+                    נעדכן אותך במייל ברגע שהיא תאושר להעלאה.
+                    <br />
+                    זכרי, במידה ותתבצע השכרה דרך האתר,
+                    <br />
+                    תחול עמלה של 15% ממחיר ההשכרה.
+                    <br />
+                    אנו מעריכים את שיתוף הפעולה!
+                    <br />
+                </p>
+                <button className="general-button" onClick={closeModal}>סגור</button>
+            </Modal>
+        </div>
+    );
 }
 
 export default AddDressForm;
