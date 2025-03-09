@@ -21,12 +21,8 @@ function DressList() {
     useEffect(() => {
         const getDresses = async () => {
             try {
-                const response = await fetchDresses(selectedColor, selectedLocation, sort === 'price-low' ? 'price-asc' : sort === 'price-high' ? 'price-desc' : undefined);
-
-                // הוספת השורה הבאה כדי להפוך את סדר השמלות
-                const reversedDresses = [...response.dresses].reverse();
-
-                setDresses(reversedDresses);
+                const response = await fetchDresses(selectedColor, selectedLocation, sort === 'price-high' ? 'price-desc' : sort === 'price-low' ? 'price-asc' : undefined);
+                setDresses(response.dresses);
                 setColorCounts(response.colorCounts);
                 setLocationCounts(response.locationCounts);
                 setLoading(false);
@@ -102,8 +98,8 @@ function DressList() {
                     </button>
                     <div className={`sort-dropdown ${isDropdownOpen ? 'show' : ''}`}>
                         <button onClick={() => { setSort("latest"); setIsDropdownOpen(false); }}>החדש ביותר</button>
-                        <button onClick={() => { setSort("price-high"); setIsDropdownOpen(false); }}>מחיר: נמוך לגבוה</button>
-                        <button onClick={() => { setSort("price-low"); setIsDropdownOpen(false); }}>מחיר: גבוה לנמוך</button>
+                        <button onClick={() => { setSort("price-low"); setIsDropdownOpen(false); }}>מחיר: נמוך לגבוה</button>
+                        <button onClick={() => { setSort("price-high"); setIsDropdownOpen(false); }}>מחיר: גבוה לנמוך</button>
                     </div>
                 </div>
 

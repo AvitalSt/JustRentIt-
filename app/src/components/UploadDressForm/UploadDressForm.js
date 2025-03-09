@@ -112,7 +112,7 @@ function AddDressForm() {
             <h2>✨ הוספת שמלה</h2>
             <form className="add-dress-form" onSubmit={handleSubmit} encType="multipart/form-data">
                 {Object.keys(formData).map((key) => (
-                    <div key={key}>
+                    <div key={key} className="input-group">
                         <input
                             type={key === "email" ? "email" : key === "phone" ? "tel" : "text"}
                             name={key}
