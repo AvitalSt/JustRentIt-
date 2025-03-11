@@ -2,25 +2,31 @@ import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
-export const fetchDresses = async (color, location, sortBy) => {
+export const fetchDresses = async (color, location, sortBy, page, limit) => {
     try {
         let url = `${API_URL}/dresses`;
         const params = new URLSearchParams();
         if (color) {
             params.append('color', color);
         }
-        if (location) { 
+        if (location) {
             params.append('location', location);
         }
         if (sortBy) {
             params.append('sortBy', sortBy);
+        }
+        if (page) {
+            params.append('page', page);
+        }
+        if (limit) {
+            params.append('limit', limit);
         }
         const queryString = params.toString();
         if (queryString) {
             url += `?${queryString}`;
         }
         const response = await axios.get(url);
-        return response.data; 
+        return response.data;
     } catch (error) {
         console.error("Error fetching dresses:", error);
         throw error;

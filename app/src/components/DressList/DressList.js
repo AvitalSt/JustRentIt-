@@ -17,14 +17,19 @@ function DressList() {
     const dropdownRef = useRef(null);
     const colorDropdownRef = useRef(null);
     const locationDropdownRef = useRef(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [dressesPerPage] = useState(16);
+    const [totalPages, setTotalPages] = useState(1);
 
     useEffect(() => {
         const getDresses = async () => {
             try {
-                const response = await fetchDresses(selectedColor, selectedLocation, sort === 'price-high' ? 'price-desc' : sort === 'price-low' ? 'price-asc' : undefined);
+                setLoading(true);
+                const response = await fetchDresses(selectedColor, selectedLocation, sort === 'price-high' ? 'price-desc' : sort === 'price-low' ? 'price-asc' : undefined, currentPage, dressesPerPage);
                 setDresses(response.dresses);
                 setColorCounts(response.colorCounts);
                 setLocationCounts(response.locationCounts);
+                setTotalPages(Math.ceil(response.totalCount / dressesPerPage));
                 setLoading(false);
             } catch (error) {
                 console.error("Error fetching dresses:", error);
@@ -32,7 +37,7 @@ function DressList() {
             }
         };
         getDresses();
-    }, [selectedColor, selectedLocation, sort]);
+    }, [selectedColor, selectedLocation, sort, currentPage, dressesPerPage]);
 
     const getCount = (array, id) => {
         const count = array.find((item) => item._id === id);
@@ -115,9 +120,8 @@ function DressList() {
             </div>
 
             <div className="dress-list-container">
-                {loading ? (
-                    <p>השמלות בטעינה, אנא המתינו מספר שניות.</p>
-                ) : dresses && dresses.length > 0 ? (
+                {loading && <p>השמלות בטעינה, אנא המתינו מספר שניות.</p>}
+                {!loading && dresses && dresses.length > 0 && (
                     dresses.map((dress) => (
                         <div className="card" key={dress._id}>
                             <img src={dress.image} className="card-img-top" alt={dress.name} />
@@ -129,9 +133,18 @@ function DressList() {
                             </div>
                         </div>
                     ))
-                ) : (
+                )}
+                {!loading && (!dresses || dresses.length === 0) && (
                     <p>No dresses found.</p>
                 )}
+
+            </div>
+            <div className="pagination">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                    <button key={page} onClick={() => setCurrentPage(page)} className={currentPage === page ? 'active' : ''}>
+                        {page}
+                    </button>
+                ))}
             </div>
         </div>
     );

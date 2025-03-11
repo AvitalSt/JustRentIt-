@@ -5,14 +5,18 @@ const getAllDresses = async (req, res) => {
     try {
         const colorFilter = req.query.color;
         const locationFilter = req.query.location;
-        const sortBy = req.query.sortBy; 
+        const sortBy = req.query.sortBy;
+        const page = parseInt(req.query.page) || 1; // קבלת מספר עמוד או 1 כברירת מחדל
+        const limit = parseInt(req.query.limit) || 16; // קבלת מספר שמלות לעמוד או 16 כברירת מחדל
         const filter = {};
+
         if (colorFilter) {
             filter.color = colorFilter;
         }
         if (locationFilter) {
             filter.location = locationFilter;
         }
+
         let sortOptions = {};
         if (sortBy === 'price-asc') {
             sortOptions = { rentPrice: 1 };
@@ -20,39 +24,39 @@ const getAllDresses = async (req, res) => {
             sortOptions = { rentPrice: -1 };
         }
 
+        const skip = (page - 1) * limit; // חישוב skip
+
         const colorCounts = await Dress.aggregate([
-            {
-                $group: {
-                    _id: "$color",
-                    count: { $sum: 1 },
-                },
-            },
-            {
-                $sort: { _id: 1 },
-            },
+            { $group: { _id: "$color", count: { $sum: 1 } } },
+            { $sort: { _id: 1 } }
         ]);
 
         const locationCounts = await Dress.aggregate([
-            {
-                $group: {
-                    _id: "$location",
-                    count: { $sum: 1 },
-                },
-            },
-            {
-                $sort: { _id: 1 },
-            },
+            { $group: { _id: "$location", count: { $sum: 1 } } },
+            { $sort: { _id: 1 } }
         ]);
 
-        const dresses = await Dress.find(filter).sort(sortOptions);
+        const dresses = await Dress.find(filter)
+            .sort(sortOptions)
+            .skip(skip) // הוספת skip
+            .limit(limit); // הוספת limit
+
+        const totalCount = await Dress.countDocuments(filter); // חישוב סך הכל שמלות
+
         const dressesWithFullImageUrl = dresses.map(dress => ({
             ...dress.toObject(),
             image: `${process.env.REACT_APP_API_URL}/uploads/${dress.image}`
         }));
-        res.json({ dresses: dressesWithFullImageUrl, colorCounts, locationCounts });
+
+        res.json({
+            dresses: dressesWithFullImageUrl,
+            colorCounts,
+            locationCounts,
+            totalCount // הוספת totalCount לתגובה
+        });
     } catch (err) {
-        console.error("Error in getAllDresses:", err); 
-        res.status(500).json({ error: 'Server error', message: err.message }); 
+        console.error("Error in getAllDresses:", err);
+        res.status(500).json({ error: 'Server error', message: err.message });
     }
 };
 
