@@ -5,10 +5,7 @@ const getAllDresses = async (req, res) => {
     try {
         const colorFilter = req.query.color;
         const locationFilter = req.query.location;
-        const sortBy = req.query.sortBy; // Add sortBy from req.query
-        console.log("Color Filter:", colorFilter);
-        console.log("Location Filter:", locationFilter);
-        console.log("Sort By:", sortBy);
+        const sortBy = req.query.sortBy; 
         const filter = {};
         if (colorFilter) {
             filter.color = colorFilter;

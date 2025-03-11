@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const adminUsername = process.env.ADMIN_USER;
 const adminPassword = process.env.ADMIN_PASS;
 
-exports.login = async (req, res) => {
+const login = async (req, res) => {
   const { username, password } = req.body;
 
   if (username === adminUsername && password === adminPassword) {
@@ -18,3 +18,4 @@ exports.login = async (req, res) => {
     res.status(401).send({ message: 'Invalid credentials' });
   }
 };
+module.exports = { login };

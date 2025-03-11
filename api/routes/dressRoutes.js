@@ -6,14 +6,12 @@ const { authenticateToken } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-const storage = multer.diskStorage({
-    destination: './uploads/', 
+const upload = multer({ storage: multer.diskStorage({
+    destination: './uploads/',
     filename: (req, file, cb) => {
         cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
-    },
-});
-
-const upload = multer({ storage: storage });
+    }
+}) });
 
 router.get('/dresses', getAllDresses);
 router.get('/dresses/:id', getDressById);
