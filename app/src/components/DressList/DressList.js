@@ -9,11 +9,11 @@ function DressList() {
     const [locationCounts, setLocationCounts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [sort, setSort] = useState("latest");
+    const [selectedColor, setSelectedColor] = useState("");
+    const [selectedLocation, setSelectedLocation] = useState("");
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isColorDropdownOpen, setIsColorDropdownOpen] = useState(false);
     const [isLocationDropdownOpen, setIsLocationDropdownOpen] = useState(false);
-    const [selectedColor, setSelectedColor] = useState("");
-    const [selectedLocation, setSelectedLocation] = useState("");
     const dropdownRef = useRef(null);
     const colorDropdownRef = useRef(null);
     const locationDropdownRef = useRef(null);
@@ -34,55 +34,45 @@ function DressList() {
         getDresses();
     }, [selectedColor, selectedLocation, sort]);
 
-    const getColorCount = (color) => {
-        if (!colorCounts) {
-            return "(0)";
-        }
-        const count = colorCounts.find((item) => item._id === color);
+    const getCount = (array, id) => {
+        const count = array.find((item) => item._id === id);
         return count ? `(${count.count})` : "(0)";
     };
 
-    const getLocationCount = (location) => {
-        if (!locationCounts) {
-            return "(0)";
-        }
-        const count = locationCounts.find((item) => item._id === location);
-        return count ? `(${count.count})` : "(0)";
+    const handleDropdownToggle = (dropdown) => {
+        if (dropdown === "sort") setIsDropdownOpen(!isDropdownOpen);
+        if (dropdown === "color") setIsColorDropdownOpen(!isColorDropdownOpen);
+        if (dropdown === "location") setIsLocationDropdownOpen(!isLocationDropdownOpen);
     };
 
-    const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
-    const toggleColorDropdown = () => setIsColorDropdownOpen(!isColorDropdownOpen);
-    const toggleLocationDropdown = () => setIsLocationDropdownOpen(!isLocationDropdownOpen);
-
-    const handleClickOutside = (event) => {
-        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-            setIsDropdownOpen(false);
-        }
-    };
-
-    const handleColorClickOutside = (event) => {
-        if (colorDropdownRef.current && !colorDropdownRef.current.contains(event.target)) {
-            setIsColorDropdownOpen(false);
-        }
-    };
-
-    const handleLocationClickOutside = (event) => {
-        if (locationDropdownRef.current && !locationDropdownRef.current.contains(event.target)) {
-            setIsLocationDropdownOpen(false);
-        }
+    const handleClickOutside = (event, dropdown) => {
+        if (dropdown === "sort" && dropdownRef.current && !dropdownRef.current.contains(event.target)) setIsDropdownOpen(false);
+        if (dropdown === "color" && colorDropdownRef.current && !colorDropdownRef.current.contains(event.target)) setIsColorDropdownOpen(false);
+        if (dropdown === "location" && locationDropdownRef.current && !locationDropdownRef.current.contains(event.target)) setIsLocationDropdownOpen(false);
     };
 
     useEffect(() => {
-        document.addEventListener("mousedown", handleClickOutside);
-        document.addEventListener("mousedown", handleColorClickOutside);
-        document.addEventListener("mousedown", handleLocationClickOutside);
+        document.addEventListener("mousedown", (event) => handleClickOutside(event, "sort"));
+        document.addEventListener("mousedown", (event) => handleClickOutside(event, "color"));
+        document.addEventListener("mousedown", (event) => handleClickOutside(event, "location"));
 
         return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-            document.removeEventListener("mousedown", handleColorClickOutside);
-            document.removeEventListener("mousedown", handleLocationClickOutside);
+            document.removeEventListener("mousedown", (event) => handleClickOutside(event, "sort"));
+            document.removeEventListener("mousedown", (event) => handleClickOutside(event, "color"));
+            document.removeEventListener("mousedown", (event) => handleClickOutside(event, "location"));
         };
     }, []);
+
+    const colors = ["אדום", "אפור", "בורדו", "ורוד", "זהב", "חום", "ירוק", "כחול", "כסף", "כתום", "לבן", "סגול", "צבעוני", "שחור", "שמנת", "תכלת"];
+    const locations = ["בני ברק", "אלעד", "אשקלון", "בית שמש", "ביתר עילית", "גבעת זאב", "חולון", "חיפה", "חריש", "טבריה", "ירושלים", "לוד", "מודיעין עילית", "נתניה", "פתח תקווה", "קרית מלאכי", "ראשון לציון", "רחובות", "רכסים", "רמת השרון", "תל אביב"];
+
+    const renderDropdown = (list, setSelected, getCount, type) => (
+        list.map(item => (
+            <button key={item} onClick={() => { setSelected(item); handleDropdownToggle(type); }}>
+                {item} {getCount(type === 'color' ? colorCounts : locationCounts, item)}
+            </button>
+        ))
+    );
 
     return (
         <div>
@@ -93,7 +83,7 @@ function DressList() {
 
             <div className="filter-container">
                 <div className="sort-container" ref={dropdownRef}>
-                    <button className="sort-button" onClick={toggleDropdown}>
+                    <button className="sort-button" onClick={() => handleDropdownToggle('sort')}>
                         מיין לפי {sort === "latest" ? "החדש ביותר" : sort === "price-low" ? "מחיר: נמוך לגבוה" : "מחיר: גבוה לנמוך"}
                     </button>
                     <div className={`sort-dropdown ${isDropdownOpen ? 'show' : ''}`}>
@@ -104,56 +94,22 @@ function DressList() {
                 </div>
 
                 <div className="sort-container" ref={colorDropdownRef}>
-                    <button className="sort-button" onClick={toggleColorDropdown}>
-                        צבע {selectedColor ? selectedColor : "בחר צבע"}
+                    <button className="sort-button" onClick={() => handleDropdownToggle('color')}>
+                        צבע {selectedColor || "בחר צבע"}
                     </button>
                     <div className={`sort-dropdown ${isColorDropdownOpen ? 'show' : ''}`}>
                         <button onClick={() => { setSelectedColor(""); setIsColorDropdownOpen(false); }}>כל הצבעים</button>
-                        <button onClick={() => { setSelectedColor("אדום"); setIsColorDropdownOpen(false); }}>אדום {getColorCount("אדום")}</button>
-                        <button onClick={() => { setSelectedColor("אפור"); setIsColorDropdownOpen(false); }}>אפור {getColorCount("אפור")}</button>
-                        <button onClick={() => { setSelectedColor("בורדו"); setIsColorDropdownOpen(false); }}>בורדו {getColorCount("בורדו")}</button>
-                        <button onClick={() => { setSelectedColor("ורוד"); setIsColorDropdownOpen(false); }}>ורוד {getColorCount("ורוד")}</button>
-                        <button onClick={() => { setSelectedColor("זהב"); setIsColorDropdownOpen(false); }}>זהב {getColorCount("זהב")}</button>
-                        <button onClick={() => { setSelectedColor("חום"); setIsColorDropdownOpen(false); }}>חום {getColorCount("חום")}</button>
-                        <button onClick={() => { setSelectedColor("ירוק"); setIsColorDropdownOpen(false); }}>ירוק {getColorCount("ירוק")}</button>
-                        <button onClick={() => { setSelectedColor("כחול"); setIsColorDropdownOpen(false); }}>כחול {getColorCount("כחול")}</button>
-                        <button onClick={() => { setSelectedColor("כסף"); setIsColorDropdownOpen(false); }}>כסף {getColorCount("כסף")}</button>
-                        <button onClick={() => { setSelectedColor("כתום"); setIsColorDropdownOpen(false); }}>כתום {getColorCount("כתום")}</button>
-                        <button onClick={() => { setSelectedColor("לבן"); setIsColorDropdownOpen(false); }}>לבן {getColorCount("לבן")}</button>
-                        <button onClick={() => { setSelectedColor("סגול"); setIsColorDropdownOpen(false); }}>סגול {getColorCount("סגול")}</button>
-                        <button onClick={() => { setSelectedColor("צבעוני"); setIsColorDropdownOpen(false); }}>צבעוני {getColorCount("צבעוני")}</button>
-                        <button onClick={() => { setSelectedColor("שחור"); setIsColorDropdownOpen(false); }}>שחור {getColorCount("שחור")}</button>
-                        <button onClick={() => { setSelectedColor("שמנת"); setIsColorDropdownOpen(false); }}>שמנת {getColorCount("שמנת")}</button>
-                        <button onClick={() => { setSelectedColor("תכלת"); setIsColorDropdownOpen(false); }}>תכלת {getColorCount("תכלת")}</button>
+                        {renderDropdown(colors, setSelectedColor, getCount, 'color')}
                     </div>
                 </div>
+
                 <div className="sort-container" ref={locationDropdownRef}>
-                    <button className="sort-button" onClick={toggleLocationDropdown}>
-                        עיר {selectedLocation ? selectedLocation : "בחר עיר"}
+                    <button className="sort-button" onClick={() => handleDropdownToggle('location')}>
+                        עיר {selectedLocation || "בחר עיר"}
                     </button>
                     <div className={`sort-dropdown ${isLocationDropdownOpen ? 'show' : ''}`}>
                         <button onClick={() => { setSelectedLocation(""); setIsLocationDropdownOpen(false); }}>כל הערים</button>
-                        <button onClick={() => { setSelectedLocation("בני ברק"); setIsLocationDropdownOpen(false); }}>בני ברק {getLocationCount("בני ברק")}</button>
-                        <button onClick={() => { setSelectedLocation("אלעד"); setIsLocationDropdownOpen(false); }}>אלעד {getLocationCount("אלעד")}</button>
-                        <button onClick={() => { setSelectedLocation("אשקלון"); setIsLocationDropdownOpen(false); }}>אשקלון {getLocationCount("אשקלון")}</button>
-                        <button onClick={() => { setSelectedLocation("בית שמש"); setIsLocationDropdownOpen(false); }}>בית שמש {getLocationCount("בית שמש")}</button>
-                        <button onClick={() => { setSelectedLocation("ביתר עילית"); setIsLocationDropdownOpen(false); }}>ביתר עילית {getLocationCount("ביתר עילית")}</button>
-                        <button onClick={() => { setSelectedLocation("גבעת זאב"); setIsLocationDropdownOpen(false); }}>גבעת זאב {getLocationCount("גבעת זאב")}</button>
-                        <button onClick={() => { setSelectedLocation("חולון"); setIsLocationDropdownOpen(false); }}>חולון {getLocationCount("חולון")}</button>
-                        <button onClick={() => { setSelectedLocation("חיפה"); setIsLocationDropdownOpen(false); }}>חיפה {getLocationCount("חיפה")}</button>
-                        <button onClick={() => { setSelectedLocation("חריש"); setIsLocationDropdownOpen(false); }}>חריש {getLocationCount("חריש")}</button>
-                        <button onClick={() => { setSelectedLocation("טבריה"); setIsLocationDropdownOpen(false); }}>טבריה {getLocationCount("טבריה")}</button>
-                        <button onClick={() => { setSelectedLocation("ירושלים"); setIsLocationDropdownOpen(false); }}>ירושלים {getLocationCount("ירושלים")}</button>
-                        <button onClick={() => { setSelectedLocation("לוד"); setIsLocationDropdownOpen(false); }}>לוד {getLocationCount("לוד")}</button>
-                        <button onClick={() => { setSelectedLocation("מודיעין עילית"); setIsLocationDropdownOpen(false); }}>מודיעין עילית {getLocationCount("מודיעין עילית")}</button>
-                        <button onClick={() => { setSelectedLocation("נתניה"); setIsLocationDropdownOpen(false); }}>נתניה {getLocationCount("נתניה")}</button>
-                        <button onClick={() => { setSelectedLocation("פתח תקווה"); setIsLocationDropdownOpen(false); }}>פתח תקווה {getLocationCount("פתח תקווה")}</button>
-                        <button onClick={() => { setSelectedLocation("קרית מלאכי"); setIsLocationDropdownOpen(false); }}>קרית מלאכי {getLocationCount("קרית מלאכי")}</button>
-                        <button onClick={() => { setSelectedLocation("ראשון לציון"); setIsLocationDropdownOpen(false); }}>ראשון לציון {getLocationCount("ראשון לציון")}</button>
-                        <button onClick={() => { setSelectedLocation("רחובות"); setIsLocationDropdownOpen(false); }}>רחובות {getLocationCount("רחובות")}</button>
-                        <button onClick={() => { setSelectedLocation("רכסים"); setIsLocationDropdownOpen(false); }}>רכסים {getLocationCount("רכסים")}</button>
-                        <button onClick={() => { setSelectedLocation("רמת השרון"); setIsLocationDropdownOpen(false); }}>רמת השרון {getLocationCount("רמת השרון")}</button>
-                        <button onClick={() => { setSelectedLocation("תל אביב"); setIsLocationDropdownOpen(false); }}>תל אביב {getLocationCount("תל אביב")}</button>
+                        {renderDropdown(locations, setSelectedLocation, getCount, 'location')}
                     </div>
                 </div>
             </div>

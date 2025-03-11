@@ -10,10 +10,14 @@ function Navbar() {
         setIsMenuOpen(!isMenuOpen);
     };
 
+    const closeMenu = () => {
+        setIsMenuOpen(false);
+    };
+
     return (
         <nav className="navbar">
             <div className="navbar-container">
-                <Link to="/" className="navbar-logo">
+                <Link to="/" className="navbar-logo" onClick={closeMenu}>
                     <img src={logo} alt="Logo" className="logo-img" />
                 </Link>
 
@@ -25,16 +29,16 @@ function Navbar() {
 
                 <ul className={`nav-menu ${isMenuOpen ? 'active' : ''}`}>
                     <li className="nav-item">
-                        <Link to="/" className="nav-links">עמוד הבית</Link>
+                        <Link to="/" className="nav-links" onClick={closeMenu}>עמוד הבית</Link>
                     </li>
                     <li className="nav-item">
-                        <Link to="/dresses" className="nav-links">קטלוג שמלות</Link>
+                        <Link to="/dresses" className="nav-links" onClick={closeMenu}>קטלוג שמלות</Link>
                     </li>
                     <li className="nav-item">
-                        <Link to="/upload" className="nav-links">הוספת שמלה</Link>
+                        <Link to="/upload" className="nav-links" onClick={closeMenu}>הוספת שמלה</Link>
                     </li>
                     <li className="nav-item">
-                        <Link to="/about" className="nav-links">מידע על האתר</Link>
+                        <Link to="/about" className="nav-links" onClick={closeMenu}>מידע על האתר</Link>
                     </li>
                 </ul>
             </div>

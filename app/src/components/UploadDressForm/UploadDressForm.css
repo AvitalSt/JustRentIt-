@@ -124,7 +124,6 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Media Queries for Responsiveness */
 @media (max-width: 768px) {
   .add-dress-container {
       max-width: 90%;

@@ -12,27 +12,24 @@ function AddDressAdmin() {
     const [rentPrice, setRentPrice] = useState('');
     const [image, setImage] = useState(null);
     const [message, setMessage] = useState('');
-    const [isSubmitting, setIsSubmitting] = useState(false); // state עבור מצב שליחה
+    const [isSubmitting, setIsSubmitting] = useState(false); 
 
     const navigate = useNavigate();
 
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (!token) {
-            navigate('/login'); // ניתוב לדף התחברות אם אין טוקן
+            navigate('/login'); 
         }
     }, [navigate]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        // אימות נתונים בצד הלקוח (דוגמה)
         if (!name || !size || !color || !location || !buyPrice || !rentPrice || !image) {
             setMessage('אנא מלא את כל השדות.');
             return;
         }
-
-        setIsSubmitting(true); // עדכון state שליחה
+        setIsSubmitting(true); 
 
         const formData = new FormData();
         formData.append('name', name);
@@ -55,7 +52,6 @@ function AddDressAdmin() {
             setImage(null);
         } catch (error) {
             if (error.response && error.response.status === 400) {
-                // שגיאת אימות נתונים מהשרת
                 setMessage(error.response.data.error || 'שגיאה בנתונים. אנא בדוק את הקלט שלך.');
             } else if (error.message === 'Network Error') {
                 setMessage('שגיאת רשת. נסה שוב מאוחר יותר.');
@@ -63,7 +59,7 @@ function AddDressAdmin() {
                 setMessage(error.response?.data?.error || 'שגיאה בהוספת השמלה. נסה שוב.');
             }
         } finally {
-            setIsSubmitting(false); // עדכון state שליחה
+            setIsSubmitting(false); 
         }
     };
 

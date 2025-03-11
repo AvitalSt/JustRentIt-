@@ -34,11 +34,6 @@ function DressDetail() {
         fetchDress();
     }, [id]);
 
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-        setErrors({ ...errors, [e.target.name]: "" }); 
-    };
-
     const validateForm = () => {
         let isValid = true;
         let newErrors = {};
@@ -69,6 +64,11 @@ function DressDetail() {
         setErrors(newErrors);
         return isValid;
     };
+    
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+        setErrors({ ...errors, [e.target.name]: "" }); 
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -90,7 +90,6 @@ function DressDetail() {
             setFormData({ fullName: "", email: "", phone: "" });
         } catch (error) {
             console.error("Error sending email:", error);
-            alert("הייתה בעיה בשמירה או שליחה של הפרטים. נסה שוב.");
         }
     };
 

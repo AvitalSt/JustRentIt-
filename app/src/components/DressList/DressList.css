@@ -7,7 +7,7 @@
 }
 
 .card {
-  width: calc(25% - 20px); /* שינוי: 4 שמלות בשורה */
+  width: calc(25% - 20px);
   margin: 10px;
   display: flex;
   flex-direction: column;
@@ -132,21 +132,21 @@
   }
 
   .card-body {
-    flex-grow: 3; /* הקטנת החלק הלבן במסך טלפון */
-    padding: 0.0001px; /* הקטנת ריווח פנימי */
+    flex-grow: 3;
+    padding: 0.0001px;
   }
 
   .card-title {
-    font-size: 0.9rem; /* הקטנת גודל הטקסט */
+    font-size: 0.9rem;
   }
 
   .card-text,
   .card-price {
-    font-size: 0.7rem; /* הקטנת גודל הטקסט */
+    font-size: 0.7rem;
   }
 
   .card-body .btn {
-    font-size: 0.6rem; /* הקטנת גודל הכפתור */
-    padding: 2px 6px; /* הקטנת ריפוד הכפתור */
+    font-size: 0.6rem;
+    padding: 2px 6px;
   }
 }

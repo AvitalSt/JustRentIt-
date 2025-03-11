@@ -1,6 +1,6 @@
 .info-container {
-  width: 90%; /* התאמה לרוחב מסך קטן */
-  max-width: 1200px; /* הגבלה לרוחב מקסימלי במסכים גדולים */
+  width: 90%;
+  max-width: 1200px;
   margin: 50px auto;
   font-family: 'Open Sans', sans-serif;
   line-height: 1.8;
@@ -12,7 +12,7 @@
 
 .info-container h1 {
   font-family: 'Playfair Display', serif;
-  font-size: 2.5em; /* הקטנת גודל גופן במסכים קטנים */
+  font-size: 2.5em;
   text-align: center;
   color: #d08a7e;
   margin-bottom: 20px;
@@ -20,7 +20,7 @@
 }
 
 .info-container h2 {
-  font-size: 1.8em; /* הקטנת גודל גופן במסכים קטנים */
+  font-size: 1.8em;
   color: #efc2ce;
   margin-top: 30px;
   border-bottom: 2px solid #efc2ce;
@@ -28,7 +28,7 @@
 }
 
 .info-container h3 {
-  font-size: 1.3em; /* הקטנת גודל גופן במסכים קטנים */
+  font-size: 1.3em;
   color: #333;
   margin-top: 20px;
 }
@@ -36,7 +36,7 @@
 .info-container p {
   margin-bottom: 20px;
   color: #555;
-  font-size: 1em; /* הקטנת גודל גופן במסכים קטנים */
+  font-size: 1em;
 }
 
 .info-container ul {
@@ -48,7 +48,7 @@
   margin-bottom: 10px;
   position: relative;
   padding-left: 30px;
-  font-size: 1em; /* הקטנת גודל גופן במסכים קטנים */
+  font-size: 1em;
 }
 
 .info-container li::before {
@@ -69,7 +69,6 @@
   color: #efc2ce;
 }
 
-/* התאמות רספונסיביות */
 @media (max-width: 768px) {
   .info-container {
       padding: 20px;

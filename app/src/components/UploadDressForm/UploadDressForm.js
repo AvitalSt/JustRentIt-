@@ -20,7 +20,6 @@ function AddDressForm() {
 
     const [image, setImage] = useState(null);
     const [errors, setErrors] = useState({});
-    const [successMessage, setSuccessMessage] = useState("");
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
@@ -28,16 +27,6 @@ function AddDressForm() {
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
         setErrors({ ...errors, [e.target.name]: "" });
-    };
-
-    const handleImageChange = (e) => {
-        if (e.target.files.length === 0) {
-            setImage(null);
-            setErrors({ ...errors, image: "❌ חובה להעלות תמונה!" });
-        } else {
-            setImage(e.target.files[0]);
-            setErrors({ ...errors, image: "" });
-        }
     };
 
     const validateForm = () => {
@@ -90,9 +79,6 @@ function AddDressForm() {
 
         try {
             await addDressEmail(formDataToSend);
-            setSuccessMessage(
-                "פרטי השמלה שלך נשלחו. בבקשה חכו לאישור העלאת השמלה במייל. תזכורת: אם תהיה השכרה דרך האתר, נבקש 15% ממחיר השמלה. תודה על שיתוף הפעולה."
-            );
             setModalIsOpen(true);
         } catch (error) {
             alert("❌ שגיאה בהוספת השמלה");
@@ -103,7 +89,6 @@ function AddDressForm() {
 
     const closeModal = () => {
         setModalIsOpen(false);
-        setSuccessMessage("");
         navigate("/");
     };
 
@@ -134,7 +119,7 @@ function AddDressForm() {
                     </div>
                 ))}
 
-                <input type="file" name="image" accept="image/*" onChange={handleImageChange} />
+                <input type="file" name="image" accept="image/*" onChange={(e) => setImage(e.target.files[0])} />
                 {errors.image && <div className="text-danger">{errors.image}</div>}
 
                 <button className="add-dress-btn" type="submit" disabled={isLoading}>
