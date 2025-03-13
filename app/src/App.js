@@ -11,9 +11,6 @@ import About from "./components/AboutSite/AboutSite.js"
 import Login from "./components/Login/Login.js"
 import AddDressAdmin from "./components/AddDressAdmin/AddDressAdmin.js"
 import Footer from './components/Footer/Footer'; 
-import VisualSearch from './components/VisualSearch/VisualSearch.js'; 
-
-
 
 function App() {
   return (
@@ -28,8 +25,6 @@ function App() {
           <Route path="/login/" element={< Login />} />
           <Route path="/add-dress" element={<AddDressAdmin />} />
           <Route path="/about" element={<About />} />
-          <Route path="/VisualSearch" element={<VisualSearch />} />
-
         </Routes>
       </div>
       <Footer /> 

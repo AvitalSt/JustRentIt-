@@ -6,8 +6,8 @@ const getAllDresses = async (req, res) => {
         const colorFilter = req.query.color;
         const locationFilter = req.query.location;
         const sortBy = req.query.sortBy;
-        const page = parseInt(req.query.page) || 1; // קבלת מספר עמוד או 1 כברירת מחדל
-        const limit = parseInt(req.query.limit) || 16; // קבלת מספר שמלות לעמוד או 16 כברירת מחדל
+        const page = parseInt(req.query.page) || 1; 
+        const limit = parseInt(req.query.limit) || 16; 
         const filter = {};
 
         if (colorFilter) {
@@ -24,7 +24,7 @@ const getAllDresses = async (req, res) => {
             sortOptions = { rentPrice: -1 };
         }
 
-        const skip = (page - 1) * limit; // חישוב skip
+        const skip = (page - 1) * limit; 
 
         const colorCounts = await Dress.aggregate([
             { $group: { _id: "$color", count: { $sum: 1 } } },
@@ -38,10 +38,10 @@ const getAllDresses = async (req, res) => {
 
         const dresses = await Dress.find(filter)
             .sort(sortOptions)
-            .skip(skip) // הוספת skip
-            .limit(limit); // הוספת limit
+            .skip(skip) 
+            .limit(limit); 
 
-        const totalCount = await Dress.countDocuments(filter); // חישוב סך הכל שמלות
+        const totalCount = await Dress.countDocuments(filter); 
 
         const dressesWithFullImageUrl = dresses.map(dress => ({
             ...dress.toObject(),
@@ -52,7 +52,7 @@ const getAllDresses = async (req, res) => {
             dresses: dressesWithFullImageUrl,
             colorCounts,
             locationCounts,
-            totalCount // הוספת totalCount לתגובה
+            totalCount 
         });
     } catch (err) {
         console.error("Error in getAllDresses:", err);
