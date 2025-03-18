@@ -1,5 +1,4 @@
 const Dress = require('../models/dressModel');
-require('dotenv').config();
 
 const getAllDresses = async (req, res) => {
     try {

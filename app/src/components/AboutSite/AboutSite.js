@@ -1,4 +1,3 @@
-import React from 'react';
 import './AboutSite.css';
 
 function AboutSite() {
