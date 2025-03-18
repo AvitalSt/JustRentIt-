@@ -18,6 +18,8 @@
 
 .card img {
   object-fit: cover;
+  width: 100%;
+  height: 300px; 
 }
 
 .filter-container {
@@ -53,7 +55,7 @@
   background-color: #f9f9f9;
   min-width: 160px;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-  z-index: 1;
+  z-index: 3;
   border-radius: 5px;
   display: none;
 }
@@ -83,18 +85,20 @@
   justify-content: center;
   margin-top: 20px;
   position: relative;
-  z-index: 1;
+  z-index: 10;
+  width: 100%;
 }
 
 .pagination button {
   background-color: #897077;
   border: none;
   color: #fff;
-  padding: 10px 15px;
+  padding: 8px 12px;
   margin: 0 5px;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  font-size: 0.8rem;
 }
 
 .pagination button:hover,
@@ -188,4 +192,30 @@
       font-size: 0.6rem;
       padding: 2px 6px;
   }
+}
+
+.sort-container .counter {
+  position: absolute;
+  top: 50%;
+  right: -10px;
+  transform: translateY(-50%);
+  background-color: #897077;
+  color: white;
+  padding: 5px 8px;
+  border-radius: 50%;
+  font-size: 0.8rem;
+  z-index: 1;
+}
+
+.sort-container.open .counter {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translate(-50%, 0);
+  font-size: 0.7rem;
+  background-color: #897077;
+  color: white;
+  padding: 5px 8px;
+  border-radius: 50%;
+  z-index: 2;
 }

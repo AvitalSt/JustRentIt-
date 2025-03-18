@@ -10,7 +10,7 @@ const getAllDresses = async (req, res) => {
         const filter = {};
 
         if (colorFilter) {
-            filter.color = colorFilter;
+            filter.color = { $regex: colorFilter, $options: 'i' }; 
         }
         if (locationFilter) {
             filter.location = locationFilter;
@@ -26,9 +26,25 @@ const getAllDresses = async (req, res) => {
         const skip = (page - 1) * limit; 
 
         const colorCounts = await Dress.aggregate([
-            { $group: { _id: "$color", count: { $sum: 1 } } },
-            { $sort: { _id: 1 } }
+            {
+                $project: {
+                    colors: { $split: ["$color", " "] } 
+                }
+            },
+            { 
+                $unwind: "$colors"  
+            },
+            {
+                $group: {
+                    _id: "$colors",  
+                    count: { $sum: 1 }  
+                }
+            },
+            { 
+                $sort: { _id: 1 }
+            }
         ]);
+        
 
         const locationCounts = await Dress.aggregate([
             { $group: { _id: "$location", count: { $sum: 1 } } },
