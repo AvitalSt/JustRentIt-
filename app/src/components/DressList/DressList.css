@@ -9,6 +9,10 @@
   position: relative;
 }
 
+body {
+  zoom: 87%;
+}
+
 .card {
   width: calc(25% - 20px);
   margin: 10px;
