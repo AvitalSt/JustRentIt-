@@ -16,7 +16,8 @@ const getAllDresses = async (req, res) => {
             filter.location = locationFilter;
         }
 
-        let sortOptions = {};
+        let sortOptions = { _id: -1 }; 
+
         if (sortBy === 'price-asc') {
             sortOptions = { rentPrice: 1 };
         } else if (sortBy === 'price-desc') {
