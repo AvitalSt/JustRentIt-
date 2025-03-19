@@ -1,0 +1,59 @@
+.catalog-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    min-height: 80vh;
+}
+
+.catalog-container h1 {
+    color: #897077;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.catalog-container p {
+    color: #666;
+    margin-bottom: 30px;
+    text-align: center;
+    max-width: 600px;
+}
+
+.catalog-container form {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    max-width: 100%;
+}
+
+.catalog-container input {
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.catalog-container button {
+    background-color: #897077;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.catalog-container button:hover {
+    background-color: #6a535a;
+}
+
+.error-message {
+    color: red;
+    margin-top: 20px;
+    text-align: center;
+}

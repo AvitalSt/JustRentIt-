@@ -102,4 +102,39 @@ const sendConfirmationEmail = async (email, fullName) => {
   }
 };
 
-module.exports = { sendInterestEmail, sendAddDressEmail, sendConfirmationEmail };
+const sendCatalogEmail = async (req, res) => {
+  try {
+      const { fullName, email } = req.body;
+
+      res.status(200).json({ success: true, message: 'הקטלוג נשלח בהצלחה!' }); 
+
+      setImmediate(async () => {
+          const catalogPath = path.join(__dirname, '..', '..', 'app', 'public', 'קטלוג.pdf');
+
+          const mailOptions = {
+              from: process.env.EMAIL_USER,
+              to: email,
+              subject: 'קטלוג השמלות של JustRentIt',
+              text: `היי ${fullName},\n\nמצורף קטלוג השמלות שלנו.`,
+              attachments: [
+                  {
+                      filename: 'קטלוג.pdf',
+                      path: catalogPath,
+                      contentType: 'application/pdf',
+                  },
+              ],
+          };
+
+          try {
+              await transporter.sendMail(mailOptions);
+              console.log('קטלוג השמלות נשלח בהצלחה למייל:', email);
+          } catch (error) {
+              console.error('שגיאה בשליחת המייל:', error);
+          }
+      });
+  } catch (error) {
+      res.status(500).json({ success: false, message: 'שגיאה בשליחת המייל' });
+  }
+};
+
+module.exports = { sendInterestEmail, sendAddDressEmail, sendConfirmationEmail, sendCatalogEmail };

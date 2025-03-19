@@ -21,3 +21,12 @@ export const addDressEmail = async (formData) => {
         throw new Error("Error sending email: " + error);
     }
 };
+
+export const sendCatalogEmail = async (formPayload) => {
+    try {
+        const response = await axios.post(`${API_URL}/send-catalog-Email`, formPayload);
+        return response;
+    } catch (error) {
+        throw new Error("שגיאה בשליחת המייל: " + error.message);
+    }
+};
