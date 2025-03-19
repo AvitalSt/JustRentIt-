@@ -5,18 +5,18 @@ const getAllDresses = async (req, res) => {
         const colorFilter = req.query.color;
         const locationFilter = req.query.location;
         const sortBy = req.query.sortBy;
-        const page = parseInt(req.query.page) || 1; 
-        const limit = parseInt(req.query.limit) || 16; 
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 16;
         const filter = {};
 
         if (colorFilter) {
-            filter.color = { $regex: colorFilter, $options: 'i' }; 
+            filter.color = { $regex: colorFilter, $options: 'i' };
         }
         if (locationFilter) {
-            filter.location = locationFilter;
+            filter.location = { $regex: locationFilter, $options: 'i' };
         }
 
-        let sortOptions = { _id: -1 }; 
+        let sortOptions = { _id: 1 };
 
         if (sortBy === 'price-asc') {
             sortOptions = { rentPrice: 1 };
@@ -24,40 +24,54 @@ const getAllDresses = async (req, res) => {
             sortOptions = { rentPrice: -1 };
         }
 
-        const skip = (page - 1) * limit; 
+        const skip = (page - 1) * limit;
 
         const colorCounts = await Dress.aggregate([
             {
                 $project: {
-                    colors: { $split: ["$color", " "] } 
+                    colors: { $split: ["$color", " "] }
                 }
             },
-            { 
-                $unwind: "$colors"  
+            {
+                $unwind: "$colors"
             },
             {
                 $group: {
-                    _id: "$colors",  
-                    count: { $sum: 1 }  
+                    _id: "$colors",
+                    count: { $sum: 1 }
                 }
             },
-            { 
+            {
                 $sort: { _id: 1 }
             }
         ]);
-        
 
         const locationCounts = await Dress.aggregate([
-            { $group: { _id: "$location", count: { $sum: 1 } } },
-            { $sort: { _id: 1 } }
+            {
+                $project: {
+                    locations: { $split: ["$location", " "] }
+                }
+            },
+            {
+                $unwind: "$locations"
+            },
+            {
+                $group: {
+                    _id: "$locations",
+                    count: { $sum: 1 }
+                }
+            },
+            {
+                $sort: { _id: 1 }
+            }
         ]);
 
         const dresses = await Dress.find(filter)
             .sort(sortOptions)
-            .skip(skip) 
-            .limit(limit); 
+            .skip(skip)
+            .limit(limit);
 
-        const totalCount = await Dress.countDocuments(filter); 
+        const totalCount = await Dress.countDocuments(filter);
 
         const dressesWithFullImageUrl = dresses.map(dress => ({
             ...dress.toObject(),
@@ -68,7 +82,7 @@ const getAllDresses = async (req, res) => {
             dresses: dressesWithFullImageUrl,
             colorCounts,
             locationCounts,
-            totalCount 
+            totalCount
         });
     } catch (err) {
         console.error("Error in getAllDresses:", err);
