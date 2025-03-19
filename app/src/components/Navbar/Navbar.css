@@ -1,7 +1,7 @@
 .navbar {
     background: rgba(255, 192, 203, 0.8);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 10px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 8px 0;
     text-align: center;
     transition: background 0.3s ease-in-out;
 }
@@ -14,7 +14,12 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 20px;
+    padding: 8px 15px;
+}
+
+.logo-download-container {
+    display: flex;
+    align-items: center;
 }
 
 .navbar-logo {
@@ -23,24 +28,31 @@
 }
 
 .logo-img {
-    height: 50px;
+    height: 40px;
     width: auto;
-    margin-right: 15px;
+    margin-right: 10px;
 }
 
 .nav-menu {
     display: flex;
     list-style: none;
+    margin-left: auto;
+    justify-content: center;
 }
 
 .nav-item {
-    margin: 0 15px;
+    margin: 0 10px;
 }
 
 .nav-links {
     text-decoration: none;
     color: black;
-    font-size: 18px;
+    font-size: 20px;
+    transition: color 0.3s ease;
+}
+
+.nav-links:hover {
+    color: #D87093;
 }
 
 .navbar-toggle {
@@ -48,22 +60,54 @@
     flex-direction: column;
     cursor: pointer;
     position: absolute;
-    top: 15px;
-    left: 20px;
+    top: 10px;
+    left: 15px;
 }
 
 .navbar-toggle span {
-    height: 3px;
-    width: 25px;
+    height: 2px;
+    width: 20px;
     background: black;
-    margin-bottom: 4px;
-    border-radius: 5px;
+    margin-bottom: 3px;
+    border-radius: 3px;
+}
+
+.download-button {
+    background-color: #ffe4e1;
+    color: #800080;
+    padding: 6px 10px;
+    border-radius: 3px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid #d87093;
+    font-size: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    display: inline-flex;
+    align-items: center;
+}
+
+.download-button:hover {
+    background-color: #ffb6c1;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
 }
 
 @media (max-width: 768px) {
     .navbar-container {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: center;
+        padding: 5px 0;
+    }
+
+    .logo-download-container {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin-bottom: 5px;
+    }
+
+    .navbar-logo {
+        margin-right: 10px;
     }
 
     .nav-menu {
@@ -71,7 +115,7 @@
         flex-direction: column;
         width: 100%;
         text-align: center;
-        margin-top: 50px;
+        margin-top: 10px;
     }
 
     .nav-menu.active {
@@ -79,7 +123,7 @@
     }
 
     .nav-item {
-        margin: 10px 0;
+        margin: 5px 0;
     }
 
     .nav-links {
@@ -87,12 +131,16 @@
     }
 
     .logo-img {
-        height: 40px;
+        height: 30px;
         margin-right: 0;
-        margin-bottom: 5px;
+        margin-bottom: 0;
     }
 
     .navbar-toggle {
         display: flex;
+    }
+
+    .download-button {
+        width: auto;
     }
 }
