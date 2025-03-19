@@ -105,7 +105,7 @@ function DressList() {
 
                 <div className="sort-container" ref={colorDropdownRef}>
                     <button className="sort-button" onClick={() => handleDropdownToggle('color')}>
-                        צבע {selectedColor || "בחר צבע"}
+                    {selectedColor ? selectedColor : "בחר צבע"}
                     </button>
                     <div className={`sort-dropdown ${isColorDropdownOpen ? 'show' : ''}`}>
                         <button onClick={() => { setSelectedColor(""); setIsColorDropdownOpen(false); }}>כל הצבעים</button>
@@ -115,7 +115,7 @@ function DressList() {
 
                 <div className="sort-container" ref={locationDropdownRef}>
                     <button className="sort-button" onClick={() => handleDropdownToggle('location')}>
-                        עיר {selectedLocation || "בחר עיר"}
+                        {selectedLocation ? selectedLocation : "בחר עיר"}
                     </button>
                     <div className={`sort-dropdown ${isLocationDropdownOpen ? 'show' : ''}`}>
                         <button onClick={() => { setSelectedLocation(""); setIsLocationDropdownOpen(false); }}>כל הערים</button>
