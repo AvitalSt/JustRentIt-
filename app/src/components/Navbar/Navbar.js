@@ -32,6 +32,9 @@ function Navbar() {
                         <Link to="/" className="nav-links" onClick={closeMenu}>עמוד הבית</Link>
                     </li>
                     <li className="nav-item">
+                        <Link to="/dresses" className="nav-links" onClick={closeMenu}>קטלוג שמלות</Link>
+                    </li>
+                    <li className="nav-item">
                         <Link to="/upload" className="nav-links" onClick={closeMenu}>הוספת שמלה</Link>
                     </li>
                     <li className="nav-item">
