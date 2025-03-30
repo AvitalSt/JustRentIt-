@@ -1,21 +1,9 @@
-import React, { useEffect } from "react";
+import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import './Home.css';
 import fabricImage from '../../assets/dressR.jpg'; 
-import { fetchDresses } from "../../services/dressService";
 
 function Home() {
-
-    useEffect(() => {
-        const wakeUpServer = async () => {
-            try {
-                await fetchDresses(); 
-            } catch (error) {
-            }
-        };
-
-        wakeUpServer();
-    }, []);
 
     return (
         <div className="container">
