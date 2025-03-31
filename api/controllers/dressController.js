@@ -5,8 +5,6 @@ const getAllDresses = async (req, res) => {
         const colorFilter = req.query.color;
         const locationFilter = req.query.location;
         const sortBy = req.query.sortBy;
-        const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 16;
         const filter = {};
 
         if (colorFilter) {
@@ -23,8 +21,6 @@ const getAllDresses = async (req, res) => {
         } else if (sortBy === 'price-desc') {
             sortOptions = { rentPrice: -1 };
         }
-
-        const skip = (page - 1) * limit;
 
         const colorCounts = await Dress.aggregate([
             {
@@ -66,11 +62,7 @@ const getAllDresses = async (req, res) => {
             }
         ]);
 
-        const dresses = await Dress.find(filter)
-            .sort(sortOptions)
-            .skip(skip)
-            .limit(limit);
-
+        const dresses = await Dress.find(filter).sort(sortOptions);
         const totalCount = await Dress.countDocuments(filter);
 
         const dressesWithFullImageUrl = dresses.map(dress => ({

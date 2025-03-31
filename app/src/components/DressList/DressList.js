@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
-import { fetchDresses } from "../../services/dressService";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import './DressList.css';
 import { Link } from 'react-router-dom';
+import { fetchDresses } from "../../services/dressService"; 
 
 function DressList() {
-    const [dresses, setDresses] = useState([]);
+    const [allDresses, setAllDresses] = useState([]);
     const [colorCounts, setColorCounts] = useState([]);
     const [locationCounts, setLocationCounts] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -22,22 +22,67 @@ function DressList() {
     const [totalPages, setTotalPages] = useState(1);
 
     useEffect(() => {
-        const getDresses = async () => {
+        const fetchData = async () => {
+            setLoading(true); 
             try {
-                setLoading(true);
-                const response = await fetchDresses(selectedColor, selectedLocation, sort === 'price-high' ? 'price-desc' : sort === 'price-low' ? 'price-asc' : undefined, currentPage, dressesPerPage);
-                setDresses(response.dresses);
-                setColorCounts(response.colorCounts);
-                setLocationCounts(response.locationCounts);
-                setTotalPages(Math.ceil(response.totalCount / dressesPerPage));
+                const storedDresses = sessionStorage.getItem('dresses');
+                const storedColorCounts = sessionStorage.getItem('colorCounts');
+                const storedLocationCounts = sessionStorage.getItem('locationCounts');
+                const storedTotalCount = sessionStorage.getItem('totalCount');
+
+                if (storedDresses && storedColorCounts && storedLocationCounts && storedTotalCount) {
+                    setAllDresses(JSON.parse(storedDresses));
+                    setColorCounts(JSON.parse(storedColorCounts));
+                    setLocationCounts(JSON.parse(storedLocationCounts));
+                    setTotalPages(Math.ceil(JSON.parse(storedTotalCount) / dressesPerPage));
+                } else {
+                    const data = await fetchDresses();
+                    setAllDresses(data.dresses);
+                    setColorCounts(data.colorCounts);
+                    setLocationCounts(data.locationCounts);
+                    setTotalPages(Math.ceil(data.totalCount / dressesPerPage));
+
+                    sessionStorage.setItem('dresses', JSON.stringify(data.dresses));
+                    sessionStorage.setItem('colorCounts', JSON.stringify(data.colorCounts));
+                    sessionStorage.setItem('locationCounts', JSON.stringify(data.locationCounts));
+                    sessionStorage.setItem('totalCount', JSON.stringify(data.totalCount));
+                }
                 setLoading(false);
             } catch (error) {
                 console.error("Error fetching dresses:", error);
-                setLoading(false);
+                setLoading(false); 
             }
         };
-        getDresses();
-    }, [selectedColor, selectedLocation, sort, currentPage, dressesPerPage]);
+
+        fetchData();
+    }, [dressesPerPage]);
+
+    const filterDresses = (dresses, colorFilter, locationFilter) => {
+        return dresses.filter(dress => {
+            if (colorFilter && !dress.color.toLowerCase().includes(colorFilter.toLowerCase())) {
+                return false;
+            }
+            if (locationFilter && !dress.location.toLowerCase().includes(locationFilter.toLowerCase())) {
+                return false;
+            }
+            return true;
+        });
+    };
+
+    const sortDresses = (dresses, sortBy) => {
+        if (sortBy === 'price-asc') {
+            return dresses.sort((a, b) => a.rentPrice - b.rentPrice);
+        } else if (sortBy === 'price-desc') {
+            return dresses.sort((a, b) => b.rentPrice - a.rentPrice);
+        }
+        return dresses;
+    };
+
+    const paginateDresses = (dresses, page, limit) => {
+        const startIndex = (page - 1) * limit;
+        const endIndex = startIndex + limit;
+        return dresses.slice(startIndex, endIndex);
+    };
 
     const getCount = (array, id) => {
         const count = array.find((item) => item._id === id);
@@ -75,7 +120,8 @@ function DressList() {
         "ירושלים", "לוד", "מודיעין-עילית", "נתניה", "פתח-תקווה",
         "קרית-מלאכי", "ראשון-לציון", "רחובות", "רכסים",
         "רמת-השרון", "תל-אביב"
-      ];
+    ];
+
     const renderDropdown = (list, setSelected, getCount, type) => (
         list.map(item => (
             <button key={item} onClick={() => { setSelected(item); handleDropdownToggle(type); }}>
@@ -83,6 +129,13 @@ function DressList() {
             </button>
         ))
     );
+
+    const filteredDresses = filterDresses(allDresses, selectedColor, selectedLocation); 
+    const sortedDresses = sortDresses(filteredDresses, sort === 'price-high' ? 'price-desc' : sort === 'price-low' ? 'price-asc' : undefined);
+
+    const paginatedDresses = useMemo(() => {
+        return paginateDresses(sortedDresses, currentPage, dressesPerPage);
+    }, [currentPage, sortedDresses, dressesPerPage]);
 
     return (
         <div>
@@ -105,7 +158,7 @@ function DressList() {
 
                 <div className="sort-container" ref={colorDropdownRef}>
                     <button className="sort-button" onClick={() => handleDropdownToggle('color')}>
-                    {selectedColor ? selectedColor : "בחר צבע"}
+                        {selectedColor ? selectedColor : "בחר צבע"}
                     </button>
                     <div className={`sort-dropdown ${isColorDropdownOpen ? 'show' : ''}`}>
                         <button onClick={() => { setSelectedColor(""); setIsColorDropdownOpen(false); }}>כל הצבעים</button>
@@ -126,8 +179,8 @@ function DressList() {
 
             <div className="dress-list-container">
                 {loading && <p>השמלות בטעינה, אנא המתינו מספר שניות.</p>}
-                {!loading && dresses && dresses.length > 0 && (
-                    dresses.map((dress) => (
+                {!loading && paginatedDresses && paginatedDresses.length > 0 && (
+                    paginatedDresses.map((dress) => (
                         <div className="card" key={dress._id}>
                             <img src={dress.image} className="card-img-top" alt={dress.name} />
                             <div className="card-body">
@@ -139,10 +192,9 @@ function DressList() {
                         </div>
                     ))
                 )}
-                {!loading && (!dresses || dresses.length === 0) && (
+                {!loading && (!paginatedDresses || paginatedDresses.length === 0) && (
                     <p>No dresses found.</p>
                 )}
-
             </div>
             <div className="pagination">
                 {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
