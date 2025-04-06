@@ -1,7 +1,11 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import './DressList.css';
-import { Link } from 'react-router-dom';
-import { fetchDresses } from "../../services/dressService"; 
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { fetchDresses } from "../../services/dressService";
+
+function useQuery() {
+    return new URLSearchParams(useLocation().search);
+}
 
 function DressList() {
     const [allDresses, setAllDresses] = useState([]);
@@ -17,13 +21,41 @@ function DressList() {
     const dropdownRef = useRef(null);
     const colorDropdownRef = useRef(null);
     const locationDropdownRef = useRef(null);
-    const [currentPage, setCurrentPage] = useState(1);
+    const query = useQuery();
+    const navigate = useNavigate();
+    const [currentPage, setCurrentPage] = useState(() => {
+        const storedPage = sessionStorage.getItem('lastListPage');
+        return storedPage ? parseInt(storedPage, 10) : 1;
+    });
     const [dressesPerPage] = useState(16);
     const [totalPages, setTotalPages] = useState(1);
 
+    const filterDresses = useCallback((dresses, colorFilter, locationFilter) => {
+        return dresses.filter(dress => {
+            if (colorFilter && !dress.color.toLowerCase().includes(colorFilter.toLowerCase())) {
+                return false;
+            }
+            if (locationFilter && !dress.location.toLowerCase().includes(locationFilter.toLowerCase())) {
+                return false;
+            }
+            return true;
+        });
+    }, []);
+
+    useEffect(() => {
+        const pageFromUrl = query.get("page");
+        if (pageFromUrl && parseInt(pageFromUrl, 10) !== currentPage) {
+            setCurrentPage(parseInt(pageFromUrl, 10));
+        }
+    }, [query, currentPage]);
+
+    useEffect(() => {
+        sessionStorage.removeItem('lastListPage');
+    }, [query]);
+
     useEffect(() => {
         const fetchData = async () => {
-            setLoading(true); 
+            setLoading(true);
             try {
                 const storedDresses = sessionStorage.getItem('dresses');
                 const storedColorCounts = sessionStorage.getItem('colorCounts');
@@ -50,39 +82,41 @@ function DressList() {
                 setLoading(false);
             } catch (error) {
                 console.error("Error fetching dresses:", error);
-                setLoading(false); 
+                setLoading(false);
             }
         };
 
         fetchData();
     }, [dressesPerPage]);
 
-    const filterDresses = (dresses, colorFilter, locationFilter) => {
-        return dresses.filter(dress => {
-            if (colorFilter && !dress.color.toLowerCase().includes(colorFilter.toLowerCase())) {
-                return false;
-            }
-            if (locationFilter && !dress.location.toLowerCase().includes(locationFilter.toLowerCase())) {
-                return false;
-            }
-            return true;
-        });
-    };
+    const filteredDresses = useMemo(() => {
+        return filterDresses(allDresses, selectedColor, selectedLocation);
+    }, [allDresses, selectedColor, selectedLocation, filterDresses]);
 
-    const sortDresses = (dresses, sortBy) => {
-        if (sortBy === 'price-asc') {
-            return dresses.sort((a, b) => a.rentPrice - b.rentPrice);
-        } else if (sortBy === 'price-desc') {
-            return dresses.sort((a, b) => b.rentPrice - a.rentPrice);
+    useEffect(() => {
+        setTotalPages(Math.ceil(filteredDresses.length / dressesPerPage));
+        setCurrentPage(1);
+    }, [filteredDresses, dressesPerPage]);
+
+    const sortedDresses = useMemo(() => {
+        const dressesToSort = [...filteredDresses];
+        if (sort === 'price-asc') {
+            return dressesToSort.sort((a, b) => a.rentPrice - b.rentPrice);
+        } else if (sort === 'price-desc') {
+            return dressesToSort.sort((a, b) => b.rentPrice - a.rentPrice);
         }
-        return dresses;
-    };
+        return dressesToSort;
+    }, [filteredDresses, sort]);
 
-    const paginateDresses = (dresses, page, limit) => {
+    const paginateDresses = useCallback((dresses, page, limit) => {
         const startIndex = (page - 1) * limit;
         const endIndex = startIndex + limit;
         return dresses.slice(startIndex, endIndex);
-    };
+    }, []);
+
+    const paginatedDresses = useMemo(() => {
+        return paginateDresses(sortedDresses, currentPage, dressesPerPage);
+    }, [currentPage, sortedDresses, dressesPerPage, paginateDresses]);
 
     const getCount = (array, id) => {
         const count = array.find((item) => item._id === id);
@@ -113,6 +147,32 @@ function DressList() {
         };
     }, []);
 
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [currentPage]);
+
+    const handleNavigateToDetail = (dressId) => {
+        sessionStorage.setItem('lastListPage', currentPage);
+        navigate(`/dress/${dressId}`);
+    };
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+        navigate(`/dresses?page=${page}`);
+    };
+
+    const handleColorSelect = (color) => {
+        setSelectedColor(color);
+        setCurrentPage(1);
+        navigate(`/dresses?page=1`);
+    };
+
+    const handleLocationSelect = (location) => {
+        setSelectedLocation(location);
+        setCurrentPage(1);
+        navigate(`/dresses?page=1`);
+    };
+
     const colors = ["אדום", "אפור", "בורדו", "ורוד", "זהב", "חום", "ירוק", "כחול", "כסף", "כתום", "לבן", "סגול", "צבעוני", "שחור", "שמנת", "תכלת"];
     const locations = [
         "בני-ברק", "אלעד", "אשקלון", "בית-שמש", "ביתר-עילית",
@@ -123,19 +183,21 @@ function DressList() {
     ];
 
     const renderDropdown = (list, setSelected, getCount, type) => (
-        list.map(item => (
-            <button key={item} onClick={() => { setSelected(item); handleDropdownToggle(type); }}>
-                {item} {getCount(type === 'color' ? colorCounts : locationCounts, item)}
-            </button>
-        ))
+        <div ref={type === 'sort' ? dropdownRef : type === 'color' ? colorDropdownRef : locationDropdownRef} className={`sort-dropdown ${type === 'sort' ? (isDropdownOpen ? 'show' : '') : type === 'color' ? (isColorDropdownOpen ? 'show' : '') : (isLocationDropdownOpen ? 'show' : '')}`}>
+            {type === 'color' && <button onClick={() => handleColorSelect('')}>כל הצבעים</button>}
+            {type === 'location' && <button onClick={() => handleLocationSelect('')}>כל הערים</button>}
+            {list.map(item => (
+                <button key={item} onClick={() => {
+                    if (type === 'color') handleColorSelect(item);
+                    else if (type === 'location') handleLocationSelect(item);
+                    else setSelected(item);
+                    handleDropdownToggle(type);
+                }}>
+                    {item} {getCount(type === 'color' ? colorCounts : locationCounts, item)}
+                </button>
+            ))}
+        </div>
     );
-
-    const filteredDresses = filterDresses(allDresses, selectedColor, selectedLocation); 
-    const sortedDresses = sortDresses(filteredDresses, sort === 'price-high' ? 'price-desc' : sort === 'price-low' ? 'price-asc' : undefined);
-
-    const paginatedDresses = useMemo(() => {
-        return paginateDresses(sortedDresses, currentPage, dressesPerPage);
-    }, [currentPage, sortedDresses, dressesPerPage]);
 
     return (
         <div>
@@ -149,31 +211,21 @@ function DressList() {
                     <button className="sort-button" onClick={() => handleDropdownToggle('sort')}>
                         מיין לפי {sort === "latest" ? "החדש ביותר" : sort === "price-low" ? "מחיר: נמוך לגבוה" : "מחיר: גבוה לנמוך"}
                     </button>
-                    <div className={`sort-dropdown ${isDropdownOpen ? 'show' : ''}`}>
-                        <button onClick={() => { setSort("latest"); setIsDropdownOpen(false); }}>החדש ביותר</button>
-                        <button onClick={() => { setSort("price-low"); setIsDropdownOpen(false); }}>מחיר: נמוך לגבוה</button>
-                        <button onClick={() => { setSort("price-high"); setIsDropdownOpen(false); }}>מחיר: גבוה לנמוך</button>
-                    </div>
+                    {renderDropdown(['החדש ביותר', 'מחיר: נמוך לגבוה', 'מחיר: גבוה לנמוך'], setSort, () => '', 'sort')}
                 </div>
 
                 <div className="sort-container" ref={colorDropdownRef}>
                     <button className="sort-button" onClick={() => handleDropdownToggle('color')}>
                         {selectedColor ? selectedColor : "בחר צבע"}
                     </button>
-                    <div className={`sort-dropdown ${isColorDropdownOpen ? 'show' : ''}`}>
-                        <button onClick={() => { setSelectedColor(""); setIsColorDropdownOpen(false); }}>כל הצבעים</button>
-                        {renderDropdown(colors, setSelectedColor, getCount, 'color')}
-                    </div>
+                    {renderDropdown(colors, setSelectedColor, getCount, 'color')}
                 </div>
 
                 <div className="sort-container" ref={locationDropdownRef}>
                     <button className="sort-button" onClick={() => handleDropdownToggle('location')}>
                         {selectedLocation ? selectedLocation : "בחר עיר"}
                     </button>
-                    <div className={`sort-dropdown ${isLocationDropdownOpen ? 'show' : ''}`}>
-                        <button onClick={() => { setSelectedLocation(""); setIsLocationDropdownOpen(false); }}>כל הערים</button>
-                        {renderDropdown(locations, setSelectedLocation, getCount, 'location')}
-                    </div>
+                    {renderDropdown(locations, setSelectedLocation, getCount, 'location')}
                 </div>
             </div>
 
@@ -187,18 +239,24 @@ function DressList() {
                                 <h5 className="card-title card-title-highlight">{dress.name}</h5>
                                 <p className="card-text card-text-italic">{dress.description}</p>
                                 <p className="card-price">מחיר: {dress.rentPrice} ₪</p>
-                                <Link to={`/dress/${dress._id}`} className="btn btn-secondary">למידע נוסף</Link>
+                                <Link
+                                    to={`/dress/${dress._id}`}
+                                    className="btn btn-secondary"
+                                    onClick={() => handleNavigateToDetail(dress._id)}
+                                >
+                                    למידע נוסף
+                                </Link>
                             </div>
                         </div>
                     ))
                 )}
                 {!loading && (!paginatedDresses || paginatedDresses.length === 0) && (
-                    <p>No dresses found.</p>
+                    <p>לא נמצאו שמלות התואמות לסינון.</p>
                 )}
             </div>
             <div className="pagination">
                 {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                    <button key={page} onClick={() => setCurrentPage(page)} className={currentPage === page ? 'active' : ''}>
+                    <button key={page} onClick={() => handlePageChange(page)} className={currentPage === page ? 'active' : ''}>
                         {page}
                     </button>
                 ))}
