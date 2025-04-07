@@ -12,7 +12,7 @@ function DressList() {
     const [colorCounts, setColorCounts] = useState([]);
     const [locationCounts, setLocationCounts] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [sort, setSort] = useState("latest");
+    const [sort, setSort] = useState("החדש ביותר");
     const [selectedColor, setSelectedColor] = useState("");
     const [selectedLocation, setSelectedLocation] = useState("");
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -100,9 +100,9 @@ function DressList() {
 
     const sortedDresses = useMemo(() => {
         const dressesToSort = [...filteredDresses];
-        if (sort === 'price-asc') {
+        if (sort === 'מחיר: נמוך לגבוה') {
             return dressesToSort.sort((a, b) => a.rentPrice - b.rentPrice);
-        } else if (sort === 'price-desc') {
+        } else if (sort === 'מחיר: גבוה לנמוך') {
             return dressesToSort.sort((a, b) => b.rentPrice - a.rentPrice);
         }
         return dressesToSort;
@@ -173,6 +173,11 @@ function DressList() {
         navigate(`/dresses?page=1`);
     };
 
+    const handleSortSelect = (selectedSort) => {
+        setSort(selectedSort);
+        setIsDropdownOpen(false);
+    };
+
     const colors = ["אדום", "אפור", "בורדו", "ורוד", "זהב", "חום", "ירוק", "כחול", "כסף", "כתום", "לבן", "סגול", "צבעוני", "שחור", "שמנת", "תכלת"];
     const locations = [
         "בני-ברק", "אלעד", "אשקלון", "בית-שמש", "ביתר-עילית",
@@ -190,7 +195,7 @@ function DressList() {
                 <button key={item} onClick={() => {
                     if (type === 'color') handleColorSelect(item);
                     else if (type === 'location') handleLocationSelect(item);
-                    else setSelected(item);
+                    else handleSortSelect(item);
                     handleDropdownToggle(type);
                 }}>
                     {item} {getCount(type === 'color' ? colorCounts : locationCounts, item)}
@@ -209,7 +214,7 @@ function DressList() {
             <div className="filter-container">
                 <div className="sort-container" ref={dropdownRef}>
                     <button className="sort-button" onClick={() => handleDropdownToggle('sort')}>
-                        מיין לפי {sort === "latest" ? "החדש ביותר" : sort === "price-low" ? "מחיר: נמוך לגבוה" : "מחיר: גבוה לנמוך"}
+                        מיין לפי {sort}
                     </button>
                     {renderDropdown(['החדש ביותר', 'מחיר: נמוך לגבוה', 'מחיר: גבוה לנמוך'], setSort, () => '', 'sort')}
                 </div>
