@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { getDressDetails } from "../../services/dressService";
 import { interestDressEmail } from "../../services/emailService";
 import Modal from "react-modal";
@@ -8,7 +8,6 @@ Modal.setAppElement("#root");
 
 function DressDetail() {
     const { id } = useParams();
-    const navigate = useNavigate();
     const [dress, setDress] = useState(null);
     const [formData, setFormData] = useState({
         fullName: "",
@@ -99,15 +98,6 @@ function DressDetail() {
         setSuccessMessage("");
     };
 
-    const handleGoBack = () => {
-        const lastPage = sessionStorage.getItem("lastListPage");
-        if (lastPage) {
-            navigate(`/dresses?page=${lastPage}`); // הנתיב צריך להיות מותאם לנתיב של רכיב DressList שלך
-        } else {
-            navigate("/dresses"); // נתיב ברירת מחדל
-        }
-    };
-
     if (!dress) {
         return null;
     }
@@ -163,9 +153,6 @@ function DressDetail() {
                         </div>
                         <button type="submit" className="btn btn-primary btn-lg w-100">שלח פרטים</button>
                     </form>
-                    <button className="btn btn-secondary mt-3" onClick={handleGoBack}>
-                       חזרה לרשימה במקום שאחזת
-                    </button>
                 </div>
             </div>
 

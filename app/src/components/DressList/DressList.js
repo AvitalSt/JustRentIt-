@@ -24,8 +24,8 @@ function DressList() {
     const query = useQuery();
     const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useState(() => {
-        const storedPage = sessionStorage.getItem('lastListPage');
-        return storedPage ? parseInt(storedPage, 10) : 1;
+        const storedState = sessionStorage.getItem('lastListState');
+        return storedState ? JSON.parse(storedState).page : 1;
     });
     const [dressesPerPage] = useState(16);
     const [totalPages, setTotalPages] = useState(1);
@@ -44,13 +44,22 @@ function DressList() {
 
     useEffect(() => {
         const pageFromUrl = query.get("page");
+        const colorFromUrl = query.get("color");
+        const locationFromUrl = query.get("location");
+
         if (pageFromUrl && parseInt(pageFromUrl, 10) !== currentPage) {
             setCurrentPage(parseInt(pageFromUrl, 10));
         }
-    }, [query, currentPage]);
+        if (colorFromUrl) {
+            setSelectedColor(colorFromUrl);
+        }
+        if (locationFromUrl) {
+            setSelectedLocation(locationFromUrl);
+        }
+    }, [query, currentPage, setSelectedColor, setSelectedLocation]);
 
     useEffect(() => {
-        sessionStorage.removeItem('lastListPage');
+        sessionStorage.removeItem('lastListState');
     }, [query]);
 
     useEffect(() => {
@@ -152,25 +161,37 @@ function DressList() {
     }, [currentPage]);
 
     const handleNavigateToDetail = (dressId) => {
-        sessionStorage.setItem('lastListPage', currentPage);
+        sessionStorage.setItem('lastListState', JSON.stringify({ page: currentPage, color: selectedColor, location: selectedLocation }));
         navigate(`/dress/${dressId}`);
     };
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
-        navigate(`/dresses?page=${page}`);
+        const params = new URLSearchParams();
+        params.append('page', page);
+        if (selectedColor) params.append('color', selectedColor);
+        if (selectedLocation) params.append('location', selectedLocation);
+        navigate(`/dresses?${params.toString()}`);
     };
 
     const handleColorSelect = (color) => {
         setSelectedColor(color);
         setCurrentPage(1);
-        navigate(`/dresses?page=1`);
+        const params = new URLSearchParams();
+        params.append('page', 1);
+        if (color) params.append('color', color);
+        if (selectedLocation) params.append('location', selectedLocation);
+        navigate(`/dresses?${params.toString()}`);
     };
 
     const handleLocationSelect = (location) => {
         setSelectedLocation(location);
         setCurrentPage(1);
-        navigate(`/dresses?page=1`);
+        const params = new URLSearchParams();
+        params.append('page', 1);
+        if (selectedColor) params.append('color', selectedColor);
+        if (location) params.append('location', location);
+        navigate(`/dresses?${params.toString()}`);
     };
 
     const handleSortSelect = (selectedSort) => {
