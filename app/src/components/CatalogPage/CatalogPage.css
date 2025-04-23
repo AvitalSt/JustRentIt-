@@ -3,7 +3,8 @@
     flex-direction: column;
     align-items: center;
     padding: 20px;
-    font-family: Arial, sans-serif;
+    font-family: 'Cormorant Garamond', serif;
+
     background-color: #f9f9f9;
     min-height: 80vh;
 }

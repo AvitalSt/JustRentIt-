@@ -1,8 +1,9 @@
+
 .info-container {
+  font-family: 'Cormorant Garamond', serif;
   width: 90%;
   max-width: 1200px;
   margin: 50px auto;
-  font-family: 'Open Sans', sans-serif;
   line-height: 1.8;
   background-color: #f8f8f8;
   border-radius: 10px;
@@ -11,8 +12,7 @@
 }
 
 .info-container h1 {
-  font-family: 'Playfair Display', serif;
-  font-size: 2.5em;
+  font-size: 3em;
   text-align: center;
   color: #d08a7e;
   margin-bottom: 20px;
@@ -20,7 +20,7 @@
 }
 
 .info-container h2 {
-  font-size: 1.8em;
+  font-size: 2.1em;
   color: #efc2ce;
   margin-top: 30px;
   border-bottom: 2px solid #efc2ce;
@@ -28,15 +28,15 @@
 }
 
 .info-container h3 {
-  font-size: 1.3em;
+  font-size: 1.6em;
   color: #333;
   margin-top: 20px;
 }
 
 .info-container p {
   margin-bottom: 20px;
-  color: #555;
-  font-size: 1em;
+  color: #252525;
+  font-size: 1.2em;
 }
 
 .info-container ul {
@@ -48,7 +48,7 @@
   margin-bottom: 10px;
   position: relative;
   padding-left: 30px;
-  font-size: 1em;
+  font-size: 1.1em;
 }
 
 .info-container li::before {
@@ -89,6 +89,6 @@
 
   .info-container p,
   .info-container li {
-      font-size: 0.9em;
+      font-size: 1em;
   }
 }
