@@ -23,7 +23,7 @@ body {
 .card img {
   object-fit: cover;
   width: 100%;
-  height: 300px; 
+  height: 300px;
 }
 
 .filter-container {
@@ -87,6 +87,7 @@ body {
 .pagination {
   display: flex;
   justify-content: center;
+  align-items: center;
   margin-top: 20px;
   position: relative;
   z-index: 10;
@@ -112,6 +113,12 @@ body {
 
 .pagination button.active {
   font-weight: bold;
+}
+
+.pagination .total-pages {
+  margin-left: 20px; /* מרחק מהכפתורים */
+  font-size: 0.9em;
+  color: #555;
 }
 
 .dress-list-container > p {
@@ -196,6 +203,28 @@ body {
       font-size: 0.6rem;
       padding: 2px 6px;
   }
+
+  .pagination {
+    display: flex;
+    justify-content: center; /* מרכז את כל הכפתורים */
+    align-items: center;
+    margin-top: 20px;
+    padding: 0 10px;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+.pagination button {
+    padding: 6px 10px;
+    margin: 0 5px; /* נותן ריווח קבוע בין הכפתורים */
+    font-size: 0.7rem;
+    border-radius: 3px;
+}
+
+.pagination .total-pages {
+    font-size: 0.8em;
+    margin-left: 10px;
+}
 }
 
 .sort-container .counter {

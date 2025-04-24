@@ -281,11 +281,35 @@ function DressList() {
                 )}
             </div>
             <div className="pagination">
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                    <button key={page} onClick={() => handlePageChange(page)} className={currentPage === page ? 'active' : ''}>
-                        {page}
-                    </button>
-                ))}
+                <button onClick={() => handlePageChange(Math.max(1, currentPage - 1))} disabled={currentPage === 1}>
+                    {'<'}
+                </button>
+                {Array.from({ length: totalPages }, (_, i) => i + 1)
+                    .filter(page => {
+                        if (totalPages <= 5) {
+                            return true;
+                        }
+                        if (currentPage <= 3) {
+                            return page <= 5;
+                        }
+                        if (currentPage >= totalPages - 2) {
+                            return page > totalPages - 5;
+                        }
+                        return page >= currentPage - 2 && page <= currentPage + 2;
+                    })
+                    .map(page => (
+                        <button
+                            key={page}
+                            onClick={() => handlePageChange(page)}
+                            className={currentPage === page ? 'active' : ''}
+                        >
+                            {page}
+                        </button>
+                    ))}
+                <button onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))} disabled={currentPage === totalPages}>
+                    {'>'}
+                </button>
+                <span className="total-pages">סך הכל {totalPages} עמודים</span>
             </div>
         </div>
     );
