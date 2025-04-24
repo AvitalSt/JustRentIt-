@@ -4,7 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 import Navbar from './components/Navbar/Navbar'; 
 import Home from "./components/Home/Home.js";
-import DressList from "./components/DressList/DressList";
+import DressListPage from "./components/DressList/DressListPage";
 import DressDetail from "./components/DressDetail/DressDetail.js";
 import UploadDress from "./components/UploadDressForm/UploadDressForm.js"
 import About from "./components/AboutSite/AboutSite.js"
@@ -20,7 +20,7 @@ function App() {
       <div className="container">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/dresses" element={<DressList />} />
+          <Route path="/dresses" element={<DressListPage />} />
           <Route path="/dress/:id" element={<DressDetail />} />
           <Route path="/upload/" element={<UploadDress />} />
           <Route path="/login/" element={< Login />} />
