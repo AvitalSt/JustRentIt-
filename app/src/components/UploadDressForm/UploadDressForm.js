@@ -33,23 +33,62 @@ function AddDressForm() {
         let isValid = true;
         let newErrors = {};
 
-        const requiredFields = ["fullName", "email", "phone", "dressName", "location", "buyPrice", "rentPrice", "size"];
-        requiredFields.forEach((field) => {
-            if (!formData[field].trim()) {
-                newErrors[field] = `${field.replace(/([A-Z])/g, ' $1').trim()} נדרש`;
-                isValid = false;
-            }
-        });
-
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (formData.email && !emailRegex.test(formData.email)) {
-            newErrors.email = "מייל לא תקין";
+        const fullNameTrimmed = formData.fullName.trim();
+        if (fullNameTrimmed.length < 2 || fullNameTrimmed.split(' ').length < 2) {
+            newErrors.fullName = "אנא הכנסי שם פרטי ושם משפחה";
             isValid = false;
         }
 
+        const phoneTrimmed = formData.phone.trim();
         const phoneRegex = /^\d{9,10}$/;
-        if (formData.phone && !phoneRegex.test(formData.phone)) {
+        if (!phoneRegex.test(phoneTrimmed)) {
             newErrors.phone = "מספר טלפון לא תקין";
+            isValid = false;
+        }
+
+        const emailTrimmed = formData.email.trim();
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (emailTrimmed && !emailRegex.test(emailTrimmed)) {
+            newErrors.email = "כתובת האימייל אינה תקינה";
+            isValid = false;
+        } else if (!emailTrimmed) {
+            newErrors.email = "אימייל נדרש";
+            isValid = false;
+        }
+
+        const dressNameTrimmed = formData.dressName.trim();
+        if (dressNameTrimmed.length < 3) {
+            newErrors.dressName = "שם השמלה אינו תקין";
+            isValid = false;
+        }
+
+        const locationTrimmed = formData.location.trim();
+        if (locationTrimmed.length < 2) {
+            newErrors.location = "מיקום אינו תקין";
+            isValid = false;
+        }
+
+        const buyPriceTrimmed = formData.buyPrice.trim();
+        if (buyPriceTrimmed && isNaN(Number(buyPriceTrimmed))) {
+            newErrors.buyPrice = "מחיר אינו תקין";
+            isValid = false;
+        } else if (!buyPriceTrimmed) {
+            newErrors.buyPrice = "מחיר קנייה נדרש.";
+            isValid = false;
+        }
+
+        const rentPriceTrimmed = formData.rentPrice.trim();
+        if (rentPriceTrimmed && isNaN(Number(rentPriceTrimmed))) {
+            newErrors.rentPrice = "מחיר אינו תקין";
+            isValid = false;
+        } else if (!rentPriceTrimmed) {
+            newErrors.rentPrice = "מחיר השכרה נדרש.";
+            isValid = false;
+        }
+
+        const sizeTrimmed = formData.size.trim();
+        if (sizeTrimmed.length < 1) {
+            newErrors.size = "יש להכניס מידה לשמלה.";
             isValid = false;
         }
 

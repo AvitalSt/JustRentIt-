@@ -27,15 +27,32 @@ function DressListPage() {
   const query = useQuery();
   const navigate = useNavigate();
 
+  const calculateColorCounts = (dresses) => {
+    const counts = {};
+    dresses.forEach(dress => {
+      const colors = dress.color ? dress.color.split(' ') : [];
+      colors.forEach(color => {
+        const trimmedColor = color.trim();
+        counts[trimmedColor] = (counts[trimmedColor] || 0) + 1;
+      });
+    });
+    return Object.entries(counts).map(([color, count]) => ({ _id: color, count }));
+  };
+
+  const calculateLocationCounts = (dresses) => {
+    const counts = {};
+    dresses.forEach(dress => {
+      const trimmedLocation = dress.location ? dress.location.trim() : '';
+      counts[trimmedLocation] = (counts[trimmedLocation] || 0) + 1;
+    });
+    return Object.entries(counts).map(([location, count]) => ({ _id: location, count }));
+  };
+
   const filterDresses = useCallback((dresses, colorFilter, locationFilter) => {
     return dresses.filter(dress => {
-      if (colorFilter && !dress.color.toLowerCase().includes(colorFilter.toLowerCase())) {
-        return false;
-      }
-      if (locationFilter && !dress.location.toLowerCase().includes(locationFilter.toLowerCase())) {
-        return false;
-      }
-      return true;
+      const colorMatch = !colorFilter || dress.color.toLowerCase().includes(colorFilter.toLowerCase());
+      const locationMatch = !locationFilter || dress.location.toLowerCase().includes(locationFilter.toLowerCase());
+      return colorMatch && locationMatch;
     });
   }, []);
 
@@ -69,8 +86,8 @@ function DressListPage() {
       try {
         const data = await fetchDresses();
         setAllDresses(data.dresses);
-        setColorCounts(data.colorCounts);
-        setLocationCounts(data.locationCounts);
+        setColorCounts(calculateColorCounts(data.dresses));
+        setLocationCounts(calculateLocationCounts(data.dresses));
         setTotalPages(Math.ceil(data.totalCount / dressesPerPage));
         setLoading(false);
       } catch (error) {
@@ -89,7 +106,20 @@ function DressListPage() {
   useEffect(() => {
     setTotalPages(Math.ceil(filteredDresses.length / dressesPerPage));
     setCurrentPage(1);
-  }, [filteredDresses, dressesPerPage]);
+
+    if (!selectedColor && selectedLocation) {
+      const dressesInLocation = allDresses.filter(dress => dress.location.toLowerCase().includes(selectedLocation.toLowerCase()));
+      setColorCounts(calculateColorCounts(dressesInLocation));
+      setLocationCounts(calculateLocationCounts(allDresses));
+    } else if (selectedColor && !selectedLocation) {
+      const dressesInColor = allDresses.filter(dress => dress.color.toLowerCase().includes(selectedColor.toLowerCase()));
+      setLocationCounts(calculateLocationCounts(dressesInColor));
+      setColorCounts(calculateColorCounts(allDresses)); 
+    } else {
+      setColorCounts(calculateColorCounts(filteredDresses));
+      setLocationCounts(calculateLocationCounts(filteredDresses));
+    }
+  }, [filteredDresses, dressesPerPage, selectedColor, selectedLocation, allDresses]);
 
   const sortedDresses = useMemo(() => {
     const dressesToSort = [...filteredDresses];
@@ -118,10 +148,10 @@ function DressListPage() {
     params.append('page', 1);
     if (color) {
       params.append('color', color);
-    }
-    if (!color) {
+    } else {
       params.delete('color');
     }
+    if (selectedLocation) params.append('location', selectedLocation);
     navigate(`/dresses?${params.toString()}`);
   };
 
@@ -133,6 +163,8 @@ function DressListPage() {
     if (selectedColor) params.append('color', selectedColor);
     if (location) {
       params.append('location', location);
+    } else {
+      params.delete('location');
     }
     navigate(`/dresses?${params.toString()}`);
   };

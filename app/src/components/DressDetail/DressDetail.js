@@ -38,25 +38,31 @@ function DressDetail() {
         let isValid = true;
         let newErrors = {};
 
-        if (!formData.fullName.trim()) {
+        const fullNameTrimmed = formData.fullName.trim();
+        if (!fullNameTrimmed) {
             newErrors.fullName = "שם מלא נדרש";
+            isValid = false;
+        } else if (fullNameTrimmed.split(" ").length < 2) {
+            newErrors.fullName = "יש להכניס שם פרטי ושם משפחה";
             isValid = false;
         }
 
+        const emailTrimmed = formData.email.trim();
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!formData.email.trim()) {
+        if (!emailTrimmed) {
             newErrors.email = "מייל נדרש";
             isValid = false;
-        } else if (!emailRegex.test(formData.email)) {
+        } else if (!emailRegex.test(emailTrimmed)) {
             newErrors.email = "מייל לא תקין";
             isValid = false;
         }
 
+        const phoneTrimmed = formData.phone.trim();
         const phoneRegex = /^\d{9,10}$/;
-        if (!formData.phone.trim()) {
+        if (!phoneTrimmed) {
             newErrors.phone = "מספר טלפון נדרש";
             isValid = false;
-        } else if (!phoneRegex.test(formData.phone)) {
+        } else if (!phoneRegex.test(phoneTrimmed)) {
             newErrors.phone = "מספר טלפון לא תקין";
             isValid = false;
         }
