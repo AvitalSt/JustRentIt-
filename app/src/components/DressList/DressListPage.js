@@ -22,7 +22,7 @@ function DressListPage() {
     const storedState = sessionStorage.getItem('lastListState');
     return storedState ? JSON.parse(storedState).page : 1;
   });
-  const [dressesPerPage] = useState(16);
+  const [dressesPerPage] = useState(32);
   const [totalPages, setTotalPages] = useState(1);
   const query = useQuery();
   const navigate = useNavigate();
