@@ -34,10 +34,16 @@ function AddDressForm() {
         let newErrors = {};
 
         const fullNameTrimmed = formData.fullName.trim();
-        if (fullNameTrimmed.length < 2 || fullNameTrimmed.split(' ').length < 2) {
+        const words = fullNameTrimmed.split(' ');
+        
+        if (fullNameTrimmed.length < 2 || words.length < 2) {
+            newErrors.fullName = "אנא הכנסי שם פרטי ושם משפחה";
+            isValid = false;
+        } else if (words.some(word => word.length < 2)) {
             newErrors.fullName = "אנא הכנסי שם פרטי ושם משפחה";
             isValid = false;
         }
+        
 
         const phoneTrimmed = formData.phone.trim();
         const phoneRegex = /^\d{9,10}$/;
@@ -133,7 +139,7 @@ function AddDressForm() {
 
     return (
         <div className="add-dress-container">
-            <h2>✨ הוספת שמלה</h2>
+            <h2>הוספת שמלה</h2>
             <form className="add-dress-form" onSubmit={handleSubmit} encType="multipart/form-data">
                 {Object.keys(formData).map((key) => (
                     <div key={key} className="input-group">
