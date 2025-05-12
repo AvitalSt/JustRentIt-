@@ -4,7 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 import Navbar from './components/Navbar/Navbar'; 
 import Home from "./components/Home/Home.js";
-import DressListPage from "./components/DressList/DressListPage";
+import DressListPage from "./components/DressList/DressListPage.js";
 import DressDetail from "./components/DressDetail/DressDetail.js";
 import UploadDress from "./components/UploadDressForm/UploadDressForm.js"
 import About from "./components/AboutSite/AboutSite.js"
@@ -12,6 +12,8 @@ import Login from "./components/Login/Login.js"
 import AddDressAdmin from "./components/AddDressAdmin/AddDressAdmin.js"
 import Footer from './components/Footer/Footer'; 
 import CatalogPage from './components/CatalogPage/CatalogPage.js'; 
+import AboutMe from './components/AboutMe/AboutMe.js'; 
+
 
 function App() {
   return (
@@ -27,6 +29,7 @@ function App() {
           <Route path="/add-dress" element={<AddDressAdmin />} />
           <Route path="/about" element={<About />} />
           <Route path="/catalog" element={<CatalogPage />} />
+          <Route path="/developer" element={<AboutMe />} />
         </Routes>
       </div>
       <Footer /> 
