@@ -4,7 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 import Navbar from './components/Navbar/Navbar'; 
 import Home from "./components/Home/Home.js";
-import DressListPage from "./components/DressList/DressListPage";
+import DressListPage from "./components/DressList/DressListPage.js";
 import DressDetail from "./components/DressDetail/DressDetail.js";
 import UploadDress from "./components/UploadDressForm/UploadDressForm.js"
 import About from "./components/AboutSite/AboutSite.js"
