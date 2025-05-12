@@ -43,9 +43,6 @@ function Navbar() {
                     <li className="nav-item">
                         <Link to="/about" className="nav-links" onClick={closeMenu}>מידע על האתר</Link>
                     </li>
-                    <li className="nav-item">
-                        <Link to="/developer" className="nav-links" onClick={closeMenu}>נעים מאוד, אביטל!</Link>
-                    </li>
                 </ul>
             </div>
         </nav>

@@ -12,8 +12,6 @@ import Login from "./components/Login/Login.js"
 import AddDressAdmin from "./components/AddDressAdmin/AddDressAdmin.js"
 import Footer from './components/Footer/Footer'; 
 import CatalogPage from './components/CatalogPage/CatalogPage.js'; 
-import AboutMe from './components/AboutMe/AboutMe.js'; 
-
 
 function App() {
   return (
@@ -29,7 +27,6 @@ function App() {
           <Route path="/add-dress" element={<AddDressAdmin />} />
           <Route path="/about" element={<About />} />
           <Route path="/catalog" element={<CatalogPage />} />
-          <Route path="/developer" element={<AboutMe />} />
         </Routes>
       </div>
       <Footer /> 
