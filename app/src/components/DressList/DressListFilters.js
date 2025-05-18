@@ -1,17 +1,20 @@
 import React, { useState, useRef, useEffect } from "react";
-import './DressList.css'; 
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import './DressList.css';
 
-function SortDropdown({ sort, onSortSelect }) {
+function SortDropdown({ sort, onSortChange }) {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
+    const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
 
     const handleDropdownToggle = () => {
         setIsDropdownOpen(!isDropdownOpen);
     };
 
     const handleSortSelect = (selectedSort) => {
-        onSortSelect(selectedSort);
         setIsDropdownOpen(false);
+        onSortChange(selectedSort);
     };
 
     const handleClickOutside = (event) => {
@@ -151,7 +154,7 @@ function DressListFilters({
 }) {
     return (
         <div className="filter-container">
-            <SortDropdown sort={sort} onSortSelect={onSortSelect} />
+            <SortDropdown sort={sort} onSortChange={onSortSelect} />
             <ColorDropdown
                 selectedColor={selectedColor}
                 colors={colors}
