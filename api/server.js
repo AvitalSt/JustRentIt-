@@ -37,3 +37,6 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 Server is running on port ${PORT}`);
 });
+
+server.keepAliveTimeout = 120000; 
+server.headersTimeout = 120000;   
