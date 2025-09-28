@@ -26,6 +26,8 @@ mongoose.connect(DB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
 
 const app = express();
 
+// app.use(cors({ origin: 'http://localhost:3000' }));
+
 app.use(cors({ origin: 'https://just-rent-it.vercel.app' }));
 app.use(express.json());
 
