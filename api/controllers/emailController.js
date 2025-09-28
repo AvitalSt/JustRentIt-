@@ -1,5 +1,6 @@
 const path = require("path");
 const { Resend } = require("resend");
+require('dotenv').config();
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 async function sendEmail({ to, subject, text, html, attachments }) {
@@ -101,41 +102,33 @@ const sendConfirmationEmail = async (email, fullName) => {
   }
 };
 
-const sendCatalogEmail = async (req, res) => {
+async function sendCatalogEmail(req, res) {
   try {
     const { fullName, email } = req.body;
 
-    const catalogPath = path.join(
-      __dirname,
-      "..",
-      "..",
-      "app",
-      "public",
-      "קטלוג.pdf"
-    );
+    const catalogPath = path.join(__dirname, "..", "app", "public", "קטלוג.pdf");
+    const fileBuffer = fs.readFileSync(catalogPath); 
 
-    console.log("Sending catalog email to:", email);
-    await sendEmail({
+    await resend.emails.send({
+      from: `JustRentIt <${process.env.EMAIL_USER}>`,
       to: email,
       subject: "קטלוג השמלות של JustRentIt",
       text: `היי ${fullName},\n\nמצורף קטלוג השמלות שלנו.`,
       attachments: [
         {
           filename: "קטלוג.pdf",
-          path: catalogPath,
+          data: fileBuffer,      
           contentType: "application/pdf",
         },
       ],
     });
-    console.log("📩 קטלוג השמלות נשלח בהצלחה למייל:", email);
-    console.log("📩 קטלוג השמלות נשלח בהצלחה מהמייל", process.env.EMAIL_USER);
 
     res.status(200).json({ success: true, message: "הקטלוג נשלח בהצלחה!" });
   } catch (error) {
     console.error("שגיאה בשליחת הקטלוג:", error);
     res.status(500).json({ success: false, message: "⚠️ שגיאה בשליחת המייל" });
   }
-};
+}
 
 module.exports = {
   sendInterestEmail,
