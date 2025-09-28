@@ -107,11 +107,11 @@ async function sendCatalogEmail(req, res) {
   try {
     const { fullName, email } = req.body;
 
-    const catalogPath = path.join(__dirname, "..", "app", "public", "קטלוג.pdf");
-    const fileBuffer = fs.readFileSync(catalogPath); 
+    const catalogPath = path.join(__dirname, "..", "public", "קטלוג.pdf");
 
-    await resend.emails.send({
-      from: `JustRentIt <${process.env.EMAIL_USER}>`,
+    const fileBuffer = fs.readFileSync(catalogPath);
+
+    await sendEmail({
       to: email,
       subject: "קטלוג השמלות של JustRentIt",
       text: `היי ${fullName},\n\nמצורף קטלוג השמלות שלנו.`,
