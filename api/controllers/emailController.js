@@ -23,6 +23,7 @@ const sendInterestEmail = async (req, res) => {
     await transporter.sendMail(mailOptions);
     res.status(200).json({ success: true, message: 'ההתעניינות נשלחה בהצלחה!' });
   } catch (error) {
+    console.error("שגיאת SMTP אמיתית בשרת:", error); 
     res.status(500).json({ success: false, message: ' שגיאה בשליחת המייל' });
   }
 };
