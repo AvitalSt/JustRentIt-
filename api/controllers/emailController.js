@@ -1,7 +1,8 @@
 const fs = require("fs");
 const path = require("path");
 const { Resend } = require("resend");
-require('dotenv').config();
+require("dotenv").config();
+
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 async function sendEmail({ to, subject, text, html, attachments }) {
@@ -107,7 +108,16 @@ async function sendCatalogEmail(req, res) {
   try {
     const { fullName, email } = req.body;
 
+    if (!fullName || !email) {
+      return res.status(400).json({ success: false, message: "חסרים נתונים" });
+    }
+
     const catalogPath = path.join(__dirname, "..", "public", "קטלוג.pdf");
+
+    if (!fs.existsSync(catalogPath)) {
+      console.error("❌ הקובץ לא נמצא:", catalogPath);
+      return res.status(500).json({ success: false, message: "❌ הקובץ לא נמצא בשרת" });
+    }
 
     const fileBuffer = fs.readFileSync(catalogPath);
 
@@ -118,12 +128,13 @@ async function sendCatalogEmail(req, res) {
       attachments: [
         {
           filename: "קטלוג.pdf",
-          data: fileBuffer,      
+          data: fileBuffer,
           contentType: "application/pdf",
         },
       ],
     });
 
+    console.log("📩 הקטלוג נשלח בהצלחה למייל:", email);
     res.status(200).json({ success: true, message: "הקטלוג נשלח בהצלחה!" });
   } catch (error) {
     console.error("שגיאה בשליחת הקטלוג:", error);
