@@ -2,8 +2,6 @@ const path = require("path");
 const { Resend } = require("resend");
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-const sentCatalogs = new Set();
-
 async function sendEmail({ to, subject, text, html, attachments }) {
   return await resend.emails.send({
     from: `JustRentIt <${process.env.EMAIL_USER}>`,
@@ -25,7 +23,9 @@ const sendInterestEmail = async (req, res) => {
       text: `👗 שם מלא: ${fullName}\n📧 אימייל: ${email}\n📞 טלפון: ${phone}\n#️⃣ מספר שמלה: ${dressId}`,
     });
 
-    res.status(200).json({ success: true, message: "ההתעניינות נשלחה בהצלחה!" });
+    res
+      .status(200)
+      .json({ success: true, message: "ההתעניינות נשלחה בהצלחה!" });
   } catch (error) {
     console.error("שגיאת שליחת מייל (Interest):", error);
     res.status(500).json({ success: false, message: "⚠️ שגיאה בשליחת המייל" });
@@ -34,9 +34,20 @@ const sendInterestEmail = async (req, res) => {
 
 const sendAddDressEmail = async (req, res) => {
   try {
-    const { fullName, dressName, location, buyPrice, rentPrice, size, phone, email } = req.body;
+    const {
+      fullName,
+      dressName,
+      location,
+      buyPrice,
+      rentPrice,
+      size,
+      phone,
+      email,
+    } = req.body;
 
-    const imagePath = req.file ? path.join(__dirname, "..", "uploads", req.file.filename) : null;
+    const imagePath = req.file
+      ? path.join(__dirname, "..", "uploads", req.file.filename)
+      : null;
 
     await sendEmail({
       to: process.env.EMAIL_USER,
@@ -94,13 +105,14 @@ const sendCatalogEmail = async (req, res) => {
   try {
     const { fullName, email } = req.body;
 
-    if (sentCatalogs.has(email)) {
-      return res.status(200).json({ success: true, message: 'הקטלוג כבר נשלח.' });
-    }
-
-    sentCatalogs.add(email);
-
-    const catalogPath = path.join(__dirname, "..", "..", "app", "public", "קטלוג.pdf");
+    const catalogPath = path.join(
+      __dirname,
+      "..",
+      "..",
+      "app",
+      "public",
+      "קטלוג.pdf"
+    );
 
     console.log("Sending catalog email to:", email);
     await sendEmail({
@@ -116,13 +128,18 @@ const sendCatalogEmail = async (req, res) => {
       ],
     });
     console.log("📩 קטלוג השמלות נשלח בהצלחה למייל:", email);
+    console.log("📩 קטלוג השמלות נשלח בהצלחה מהמייל", process.env.EMAIL_USER);
 
     res.status(200).json({ success: true, message: "הקטלוג נשלח בהצלחה!" });
-
   } catch (error) {
     console.error("שגיאה בשליחת הקטלוג:", error);
     res.status(500).json({ success: false, message: "⚠️ שגיאה בשליחת המייל" });
   }
 };
 
-module.exports = { sendInterestEmail, sendAddDressEmail, sendConfirmationEmail, sendCatalogEmail };
+module.exports = {
+  sendInterestEmail,
+  sendAddDressEmail,
+  sendConfirmationEmail,
+  sendCatalogEmail,
+};
