@@ -1,19 +1,26 @@
-const fs = require("fs");
+const nodemailer = require("nodemailer");
 const path = require("path");
-const { Resend } = require("resend");
-require("dotenv").config();
+const fs = require("fs");
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
 
 async function sendEmail({ to, subject, text, html, attachments }) {
-  return await resend.emails.send({
-    from: `JustRentIt <${process.env.EMAIL_USER}>`,
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
     to,
     subject,
     text,
     html,
     attachments,
-  });
+  };
+
+  return transporter.sendMail(mailOptions);
 }
 
 const sendInterestEmail = async (req, res) => {
@@ -26,12 +33,10 @@ const sendInterestEmail = async (req, res) => {
       text: `👗 שם מלא: ${fullName}\n📧 אימייל: ${email}\n📞 טלפון: ${phone}\n#️⃣ מספר שמלה: ${dressId}`,
     });
 
-    res
-      .status(200)
-      .json({ success: true, message: "ההתעניינות נשלחה בהצלחה!" });
+    res.status(200).json({ success: true, message: "המייל נשלח בהצלחה!" });
   } catch (error) {
-    console.error("שגיאת שליחת מייל (Interest):", error);
-    res.status(500).json({ success: false, message: "⚠️ שגיאה בשליחת המייל" });
+    console.error(error);
+    res.status(500).json({ success: false, message: "שגיאה בשליחת המייל" });
   }
 };
 
@@ -104,7 +109,7 @@ const sendConfirmationEmail = async (email, fullName) => {
   }
 };
 
-async function sendCatalogEmail(req, res) {
+const sendCatalogEmail = async (req, res) => {
   try {
     const { fullName, email } = req.body;
 
@@ -115,11 +120,8 @@ async function sendCatalogEmail(req, res) {
     const catalogPath = path.join(__dirname, "..", "public", "קטלוג.pdf");
 
     if (!fs.existsSync(catalogPath)) {
-      console.error("❌ הקובץ לא נמצא:", catalogPath);
       return res.status(500).json({ success: false, message: "❌ הקובץ לא נמצא בשרת" });
     }
-
-    const fileBuffer = fs.readFileSync(catalogPath);
 
     await sendEmail({
       to: email,
@@ -128,19 +130,18 @@ async function sendCatalogEmail(req, res) {
       attachments: [
         {
           filename: "קטלוג.pdf",
-          data: fileBuffer,
+          path: catalogPath,
           contentType: "application/pdf",
         },
       ],
     });
 
-    console.log("📩 הקטלוג נשלח בהצלחה למייל:", email);
     res.status(200).json({ success: true, message: "הקטלוג נשלח בהצלחה!" });
   } catch (error) {
-    console.error("שגיאה בשליחת הקטלוג:", error);
-    res.status(500).json({ success: false, message: "⚠️ שגיאה בשליחת המייל" });
+    console.error(error);
+    res.status(500).json({ success: false, message: "שגיאה בשליחת הקטלוג" });
   }
-}
+};
 
 module.exports = {
   sendInterestEmail,
