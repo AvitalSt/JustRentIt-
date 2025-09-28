@@ -97,32 +97,30 @@ const sendCatalogEmail = async (req, res) => {
     if (sentCatalogs.has(email)) {
       return res.status(200).json({ success: true, message: 'הקטלוג כבר נשלח.' });
     }
-    
+
+    sentCatalogs.add(email);
+
+    const catalogPath = path.join(__dirname, "..", "..", "app", "public", "קטלוג.pdf");
+
+    console.log("Sending catalog email to:", email);
+    await sendEmail({
+      to: email,
+      subject: "קטלוג השמלות של JustRentIt",
+      text: `היי ${fullName},\n\nמצורף קטלוג השמלות שלנו.`,
+      attachments: [
+        {
+          filename: "קטלוג.pdf",
+          path: catalogPath,
+          contentType: "application/pdf",
+        },
+      ],
+    });
+    console.log("📩 קטלוג השמלות נשלח בהצלחה למייל:", email);
+
     res.status(200).json({ success: true, message: "הקטלוג נשלח בהצלחה!" });
 
-    setImmediate(async () => {
-      const catalogPath = path.join(__dirname, "..", "..", "app", "public", "קטלוג.pdf");
-
-      try {
-        await sendEmail({
-          to: email,
-          subject: "קטלוג השמלות של JustRentIt",
-          text: `היי ${fullName},\n\nמצורף קטלוג השמלות שלנו.`,
-          attachments: [
-            {
-              filename: "קטלוג.pdf",
-              path: catalogPath,
-              contentType: "application/pdf",
-            },
-          ],
-        });
-
-        console.log("📩 קטלוג השמלות נשלח בהצלחה למייל:", email);
-      } catch (error) {
-        console.error("שגיאה בשליחת הקטלוג:", error);
-      }
-    });
   } catch (error) {
+    console.error("שגיאה בשליחת הקטלוג:", error);
     res.status(500).json({ success: false, message: "⚠️ שגיאה בשליחת המייל" });
   }
 };
