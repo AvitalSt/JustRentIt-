@@ -1,3 +1,4 @@
+const fs = require("fs");
 const path = require("path");
 const { Resend } = require("resend");
 require('dotenv').config();
